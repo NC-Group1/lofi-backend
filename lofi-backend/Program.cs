@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using lofi_backend.Database;
+using Microsoft.Data.Sqlite;
 
 namespace lofi_backend
 {
@@ -13,6 +16,23 @@ namespace lofi_backend
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<LoFiDbContext>(options =>
+            {
+                var _connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") is "Development")
+                {
+                    //Console.WriteLine($"Connection: ${_connectionString}");
+                    //var connection = new SqliteConnection(_connectionString);
+                    //connection.Open();
+                    //options.UseSqlite(connection);
+                }
+                else
+                {
+                    Console.WriteLine($"Connection: ${_connectionString}");
+                    options.UseSqlServer(_connectionString);
+                }
+            });
 
             var app = builder.Build();
 
