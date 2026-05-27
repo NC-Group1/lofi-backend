@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="BackendTesting/Testing.csproj" Id="85c0e235-695b-40d3-ac21-77e87986a2c0" />
   <Project Path="lofi-backend/lofi-backend.csproj" />
 </Solution>
