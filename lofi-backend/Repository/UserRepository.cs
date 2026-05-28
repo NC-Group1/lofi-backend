@@ -9,7 +9,7 @@ namespace lofi_backend.Repository
         public User FetchUser(int id);
         public User InsertUser(User user);
         public User UpdateUser(User user);
-        public void DeleteUser(int id);
+        public User DeleteUser(int id);
     }
     public class UserRepository : IUserRepository
     {
@@ -44,14 +44,19 @@ namespace lofi_backend.Repository
             return updatedUser;
         }
         
-        public void DeleteUser(int id)
+        public User DeleteUser(int id)
         {
-            if (_db.Users.First(u => u.Id == id) == null) throw new Exception("User does not exist");
+            var deletedUser = _db.Users.First(u => u.Id == id);
 
-            _db.Users.Remove(_db.Users.First(u => u.Id == id));
+            if (deletedUser == null)
+                throw new Exception("User does not exist");
+
+            _db.Users.Remove(deletedUser);
+
             _db.SaveChanges();
+
+            return deletedUser;
+
         }
-
-
     }
 }

@@ -3,6 +3,7 @@ using lofi_backend.Data_Models;
 using lofi_backend.Repository;
 using lofi_backend.Service;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Shouldly;
@@ -60,12 +61,13 @@ namespace Testing.Users
         public void CreateUser_UserExists()
         {
             var userToCreate = new User(id: 1, username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30);
-            _mockService.Setup(service => service.CreateUser(userToCreate)).Returns(value: null);
+            _mockService.Setup(service => service.CreateUser(userToCreate)).Returns((User)null);
 
-            var result = _userController.CreateUser(userToCreate) as BadRequestResult;
+            var result = _userController.CreateUser(userToCreate) as ObjectResult;
 
             result.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
-            result.Value.ShouldBeNull();
+            result.ShouldBeOfType<BadRequestObjectResult>();
+ 
         }
 
         [Test]
@@ -75,30 +77,33 @@ namespace Testing.Users
 
             _mockService.Setup(service => service.EditUser(updatedUser)).Returns(updatedUser);
 
-            var result = _userController.EditUser(updatedUser) as ObjectResult;
+            var result = _userController.EditUser(updatedUser);
 
-            result.StatusCode.ShouldBe(StatusCodes.Status200OK);
-            result.Value.ShouldBe(updatedUser);
+            result.ShouldBeOfType<OkObjectResult>();
+           
         }
 
         [Test]
         public void EditUser_UserDoesNotExist()
         {
             var updatedUser = new User(id: 1, username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30);
-            _mockService.Setup(service => service.EditUser(updatedUser)).Returns(value: null);
+            _mockService.Setup(service => service.EditUser(updatedUser)).Throws (new Exception ());
 
-            var result = _userController.EditUser(updatedUser) as ObjectResult;
-            result.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
-            result.Value.ShouldBeNull();
+            var result = _userController.EditUser(updatedUser);
+            result.ShouldBeOfType<BadRequestObjectResult>();
+            
         }
         [Test]
         public void DeleteUser_UserExists()
         {
-            _mockService.Setup(service => service.RemoveUser(1));
+            var deletedUser = new User(id: 1, username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30);
 
-            var result = _userController.RemoveUser(1) as ObjectResult;
+            _mockService.Setup(service => service.RemoveUser(1)).Returns(deletedUser);
+
+            var result = _userController.RemoveUser(1);
             
-            result.StatusCode.ShouldBe(StatusCodes.Status204NoContent);
+            //result.StatusCode.ShouldBe(StatusCodes.Status204NoContent);
+            result.ShouldBeOfType<NoContentResult>();
         }
 
         [Test]

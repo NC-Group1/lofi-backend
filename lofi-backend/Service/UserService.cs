@@ -8,7 +8,7 @@ namespace lofi_backend.Service
         public User GetUser(int id);
         public User CreateUser(User user);
         public User EditUser(User user);
-        public void RemoveUser(int id);
+        public User RemoveUser(int id);
 
     }
     public class UserService : IUserService
@@ -61,11 +61,11 @@ namespace lofi_backend.Service
                 throw;
             }
         }
-        public void RemoveUser(int id)
+        public User RemoveUser(int id)
         {
             try
             {
-                _repository.DeleteUser(id);
+                return _repository.DeleteUser(id);
 
             }
             catch (Exception ex)

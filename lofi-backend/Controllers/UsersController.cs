@@ -40,7 +40,7 @@ namespace lofi_backend.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return NotFound(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -49,7 +49,7 @@ namespace lofi_backend.Controllers
         {
             try
             {
-                return Ok();
+                return Ok(_service.EditUser(user));
             }
             catch (Exception ex)
             {
@@ -57,10 +57,24 @@ namespace lofi_backend.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult RemoveUser(int id)
         {
-            return Ok();
+            if (id <= 0)
+            {
+                return BadRequest("User id must be greater than zero.");
+            }
+
+            User removeUser = _service.RemoveUser(id);
+
+
+            if (removeUser == null)
+            {
+                return NotFound($"User with id {id} was not found.");
+
+            }
+            return NoContent();
         }
+
     }
 }
