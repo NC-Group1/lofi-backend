@@ -1,5 +1,6 @@
 using lofi_backend.Data_Models;
 using lofi_backend.Service;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace lofi_backend.Controllers
@@ -16,11 +17,28 @@ namespace lofi_backend.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUser(int id)
+        [Route("all")]
+        public IActionResult GetAllUsers()
         {
             try
             {
-                return Ok(_service.GetUser(id));
+                var result = _service.GetAllUsers();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserAsync(string id, string password)
+        {
+            try
+            {
+                var result = await _service.GetUserAsync(id, password);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -30,12 +48,12 @@ namespace lofi_backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUserAsync([FromBody] UserWithPassword user)
         {
             try
             {
-                var newUser = _service.CreateUser(user);
-                return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);
+                var newUser = await _service.CreateUser(user);
+                return Ok(newUser);
             }
             catch (Exception ex)
             {
@@ -45,11 +63,12 @@ namespace lofi_backend.Controllers
         }
 
         [HttpPut]
-        public IActionResult EditUser([FromBody] User user)
+        public IActionResult EditUser([FromBody] UserData user)
         {
             try
             {
-                return Ok(_service.EditUser(user));
+                var result = _service.EditUser(user);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -58,14 +77,14 @@ namespace lofi_backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult RemoveUser(int id)
+        public IActionResult RemoveUser(string id)
         {
-            if (id <= 0)
+            if (id == "")
             {
                 return BadRequest("User id must be greater than zero.");
             }
 
-            User removeUser = _service.RemoveUser(id);
+            UserData removeUser = _service.RemoveUser(id);
 
 
             if (removeUser == null)
