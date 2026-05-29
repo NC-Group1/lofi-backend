@@ -9,22 +9,52 @@ using Microsoft.AspNetCore.Authentication.Google;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
-
+using Supabase;
+using lofi_backend.Repository.Authentication;
 
 namespace lofi_backend
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Configuration.AddJsonFile("customsettings.json");
+
+            var supabaseUrl = builder.Configuration["Supabase:Url"]!;
+            var supabaseKey = builder.Configuration["Supabase:Key"]!;
+            var options = new SupabaseOptions
+            {
+                AutoRefreshToken = true,
+                AutoConnectRealtime = true            };
+
+            var supabaseSignatureKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(supabaseKey));
+            var validIssuers = supabaseUrl + "/auth/v1";
+            List<string> validAudiences = [ "authenticated" ];
+
+            builder.Services.AddAuthorization();
+
+            builder.Services.AddAuthentication().AddJwtBearer(o =>
+            {
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = supabaseSignatureKey,
+                    ValidIssuer = validIssuers
+                };
+            });
+            
+            builder.Services.AddSingleton(provider => 
+                new Supabase.Client(supabaseUrl, supabaseKey, options));
 
             // Add services to the container.
 
             builder.Services.AddControllers();
+
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -35,7 +65,6 @@ namespace lofi_backend
                 var _connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
                 if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") is "Development")
                 {
-                    Console.WriteLine($"Connection: ${_connectionString}");
                     var connection = new SqliteConnection(_connectionString);
                     connection.Open();
                     options.UseSqlite(connection);
@@ -46,59 +75,13 @@ namespace lofi_backend
                     options.UseSqlServer(_connectionString);
                 }
             });
+
             if (builder.Environment.IsDevelopment())
             {
                 builder.Configuration.AddUserSecrets<Program>();
             }
-
-            //builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedEmail = false)
-            //    .AddEntityFrameworkStores<LoFiDbContext>()
-            //    .AddDefaultTokenProviders();
-
-            //builder.Services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            //})
-            //    .AddCookie()
-
-            //    .AddGoogle(options =>
-            //    {
-            //        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-            //        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-            //        options.CallbackPath = "/signing-google";
-            //        options.Events.OnCreatingTicket = ctx =>
-            //        {
-            //            var identity = (ClaimsIdentity)ctx.Principal.Identity;
-            //            var email = ctx.User.GetProperty("email").GetString();
-            //            var name = ctx.User.GetProperty("name").GetString();
-            //            identity.AddClaim(new Claim(ClaimTypes.Email, email));
-            //            identity.AddClaim(new Claim(ClaimTypes.Name, name));
-            //            return Task.CompletedTask;
-            //        };
-            //    });
-            //builder.Services.ConfigureApplicationCookie(options =>
-            //{
-            //    options.Cookie.HttpOnly = true;
-            //    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            //    options.Cookie.SameSite = SameSiteMode.Strict;
-            //});
-
-            var bytes = Encoding.UTF8.GetBytes(builder.Configuration["Authentication: JwtSecret"]);git b
-
-            builder.Services.AddAuthentication().AddJwtBearer(o =>
-            {
-                o.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(bytes),
-                    ValidAudience = builder.Configuration["Authentication: ValidAudience"],
-                    ValidIssuer = builder.Configuration["Authentication: ValidIssuer"]
-                };
-            });
-
             var app = builder.Build();
+
             using (IServiceScope scope = app.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<LoFiDbContext>();
