@@ -6,7 +6,7 @@ namespace lofi_backend.Data_Models
     public class Playlist
     {
         [Required]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public string Name { get; set; } = "";
         [Required]
