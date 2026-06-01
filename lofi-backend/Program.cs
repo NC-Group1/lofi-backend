@@ -1,16 +1,18 @@
-using Microsoft.EntityFrameworkCore;
 using lofi_backend.Database;
-using Microsoft.Data.Sqlite;
+using lofi_backend.HealthChecks;
 using lofi_backend.Repository;
+using lofi_backend.Repository.Authentication;
 using lofi_backend.Service;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Supabase;
-using lofi_backend.Repository.Authentication;
+using System.Security.Claims;
+using System.Text;
 
 namespace lofi_backend
 {
@@ -27,11 +29,12 @@ namespace lofi_backend
             var options = new SupabaseOptions
             {
                 AutoRefreshToken = true,
-                AutoConnectRealtime = true            };
+                AutoConnectRealtime = true
+            };
 
             var supabaseSignatureKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(supabaseKey));
             var validIssuers = supabaseUrl + "/auth/v1";
-            List<string> validAudiences = [ "authenticated" ];
+            List<string> validAudiences = ["authenticated"];
 
             builder.Services.AddAuthorization();
 
@@ -44,7 +47,7 @@ namespace lofi_backend
                     ValidIssuer = validIssuers
                 };
             });
-            
+
             builder.Services.AddSingleton(provider => 
                 new Supabase.Client(supabaseUrl, supabaseKey, options));
 
@@ -55,6 +58,9 @@ namespace lofi_backend
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+            builder.Services.AddHealthChecks().AddCheck<ApiHealthCheck>("api_health_check",
+                failureStatus: HealthStatus.Unhealthy, tags: new[] { "api", "users" }).AddCheck<DatabaseHealthCheck>("database_health_check",
+                failureStatus: HealthStatus.Unhealthy, tags: new[] {"database", "users" });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -100,6 +106,8 @@ namespace lofi_backend
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapHealthChecks("/health");
 
 
             app.MapControllers();

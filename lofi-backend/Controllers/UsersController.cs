@@ -39,7 +39,7 @@ namespace lofi_backend.Controllers
             {
                 var result = await _service.GetUserAsync(id, password);
                 return Ok(result);
-            }
+            }                                              
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
