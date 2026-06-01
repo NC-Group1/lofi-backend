@@ -97,5 +97,95 @@ public class ControllerTesting
         result.Value.ShouldBe(project);
 
     }
-    //test needed for delete method
+
+    [Test]
+    public async Task DeleteProject_ShouldDeleteProject()
+    {
+        var project = new Project
+        {
+            Id = 1,
+            Name = "Website Redesign",
+            StartDate = new DateTime(2026, 1, 15),
+            EndDate = new DateTime(2026, 4, 30),
+            Timers = new List<TaskTimer>(),
+            UserId = 101
+        };
+        _projectServiceMock.Setup(service => service.DeleteProject(1)).ReturnsAsync(project);
+        var result = await _projectsController.DeleteProject(1) as ObjectResult;
+
+        result.StatusCode.ShouldBe(StatusCodes.Status200OK);
+        result.Value.ShouldBe(project);
     }
+
+    [Test]
+    public async Task DeleteProject_ReturnsBadRequest_WhenIdIsZero()
+    {
+        var result = await _projectsController.DeleteProject(0) as ObjectResult;
+
+        result.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+        result.ShouldBeOfType<BadRequestObjectResult>();
+    }
+
+    [Test]
+    public async Task DeleteProject_ReturnsNotFound_WhenProjectDoesNotExist()
+    {
+
+        _projectServiceMock.Setup(service => service.DeleteProject(999)).ReturnsAsync((Project)null);
+
+        var result = await _projectsController.DeleteProject(999) as ObjectResult;
+
+        result.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
+        result.ShouldBeOfType<NotFoundObjectResult>();
+    }
+
+    [Test]
+    public async Task EditProject_ReturnsUpdatedProject()
+    {
+        var project = new Project
+        {
+            Id = 1,
+            Name = "Website Redesign",
+            StartDate = new DateTime(2026, 1, 15),
+            EndDate = new DateTime(2026, 4, 30),
+            Timers = new List<TaskTimer>(),
+            UserId = 101
+        };
+        var updatedProject = new Project
+        {
+            Id = 1,
+            Name = "Mobile App Development",
+            StartDate = new DateTime(2026, 3, 1),
+            EndDate = new DateTime(2026, 9, 15),
+            Timers = new List<TaskTimer>(),
+            UserId = 101
+        };
+
+        _projectServiceMock.Setup(service => service.EditProject(updatedProject)).ReturnsAsync(updatedProject);
+
+        var result = await _projectsController.EditProject(updatedProject) as ObjectResult;
+
+        result.StatusCode.ShouldBe(StatusCodes.Status200OK);
+        result.ShouldBeOfType<OkObjectResult>();
+
+    }
+
+    [Test]
+    public async Task EditProject_ProjectDoesNotExist()
+    {
+        var updatedProject = new Project
+        {
+            Id = 1,
+            Name = "Mobile App Development",
+            StartDate = new DateTime(2026, 3, 1),
+            EndDate = new DateTime(2026, 9, 15),
+            Timers = new List<TaskTimer>(),
+            UserId = 101
+        };
+        _projectServiceMock.Setup(service => service.EditProject(updatedProject)).Throws(new Exception());
+
+        var result = await _projectsController.EditProject(updatedProject) as ObjectResult;
+        result.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+        result.ShouldBeOfType<BadRequestObjectResult>();
+
+    }
+}

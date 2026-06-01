@@ -10,6 +10,8 @@ namespace lofi_backend.Repository
         Project GetProject(int id);
         Task<Project> CreateProject(Project project);
         Task<Project> DeleteProject(int id);
+
+        Task<Project> EditProject(Project project);
     }
 
     public class ProjectRepository : IProjectRepository
@@ -51,9 +53,14 @@ namespace lofi_backend.Repository
             return projectToDelete;
         }
 
+        public async Task<Project> EditProject(Project project)
+        {
+            if (!_db.Projects.Contains(project)) throw new Exception("Project doesnt exists");
 
-        //method to edit project
+            var editProject = _db.Projects.Update(project).Entity;
+            await _db.SaveChangesAsync();
+            return editProject;
+        }
 
-        
     }
 }

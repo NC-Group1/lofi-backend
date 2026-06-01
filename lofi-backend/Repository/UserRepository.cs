@@ -37,7 +37,7 @@ namespace lofi_backend.Repository
 
         public User UpdateUser(User user)
         {
-            if (_db.Users.Contains(user)) throw new Exception("User exists");
+            if (!_db.Users.Contains(user)) throw new Exception("User does not exists");
 
             var updatedUser = _db.Users.Update(user).Entity;
             _db.SaveChanges();

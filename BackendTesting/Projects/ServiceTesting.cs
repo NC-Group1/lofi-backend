@@ -93,7 +93,55 @@ internal class ServiceTesting
 
         Assert.That(result, Is.EqualTo(project));
     }
-    //test needed for delete method
+
+    [Test]
+    public async Task DeleteProject_ShouldDeleteProject()
+    {
+        var project = new Project
+        {
+            Id = 1,
+            Name = "Website Redesign",
+            StartDate = new DateTime(2026, 1, 15),
+            EndDate = new DateTime(2026, 4, 30),
+            Timers = new List<TaskTimer>(),
+            UserId = 101
+        };
+        _mockRepo.Setup(repo => repo.DeleteProject(1)).ReturnsAsync(project);
+        var result = await _projectService.DeleteProject(1);
+
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe(1);
+    }
+
+    [Test]
+
+    public async Task EditProject_ShouldReturnUpdatedProject()
+    {
+        var project = new Project
+        {
+            Id = 1,
+            Name = "Website Redesign",
+            StartDate = new DateTime(2026, 1, 15),
+            EndDate = new DateTime(2026, 4, 30),
+            Timers = new List<TaskTimer>(),
+            UserId = 101
+        };
+        var updatedProject = new Project
+        {
+            Id = 1,
+            Name = "Mobile App Development",
+            StartDate = new DateTime(2026, 3, 1),
+            EndDate = new DateTime(2026, 9, 15),
+            Timers = new List<TaskTimer>(),
+            UserId = 101
+        };
+
+        _mockRepo.Setup(repo => repo.EditProject(updatedProject)).ReturnsAsync(updatedProject);
+
+        var result = await _projectService.EditProject(updatedProject);
+
+        Assert.That(result, Is.EqualTo(updatedProject));
+    }
 }
 
 

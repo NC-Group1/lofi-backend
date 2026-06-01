@@ -8,7 +8,8 @@ namespace lofi_backend.Service
         List<Project> GetAllProjects();
         Project GetProject(int id);
         Task<Project> CreateProject(Project project);
-        Task<Project> DeleteProject(int id)
+        Task<Project> DeleteProject(int id); 
+        Task<Project> EditProject(Project project);
     }
     public class ProjectService : IProjectService
     {
@@ -45,6 +46,11 @@ namespace lofi_backend.Service
         public async Task<Project> DeleteProject(int id)
         {
             return await _repository.DeleteProject(id);
+        }
+
+        public async Task<Project> EditProject(Project project)
+        {
+            return await _repository.EditProject(project);
         }
     }
 }

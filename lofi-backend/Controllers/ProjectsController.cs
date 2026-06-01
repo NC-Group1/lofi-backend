@@ -48,7 +48,7 @@ namespace lofi_backend.Controllers
             return Created("", newProject);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
             if(id <= 0)
@@ -63,6 +63,20 @@ namespace lofi_backend.Controllers
             }
 
             return Ok(projectToDelete);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> EditProject([FromBody] Project project)
+        {
+            try
+            {
+                var projectToEdit = await _projectService.EditProject(project);
+                return  Ok(projectToEdit);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
