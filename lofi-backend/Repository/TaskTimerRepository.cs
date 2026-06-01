@@ -1,5 +1,6 @@
 ﻿using lofi_backend.Database;
 using lofi_backend.Data_Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace lofi_backend.Repository
 {
@@ -9,6 +10,7 @@ namespace lofi_backend.Repository
         Task<TaskTimer> CreateNewTimer(TaskTimer taskTimer);
         Task<TaskTimer> EditTimer(TaskTimer timer);
         Task<TaskTimer> DeleteTimer(int timerId);
+        Task<List<TaskTimer>> GetAllTimersByProjectId(int projectId);
     }
     public class TaskTimerRepository : ITaskTimerRepository
     {
@@ -56,6 +58,11 @@ namespace lofi_backend.Repository
 
             return deletedTimer;
 
+        }
+
+        public async Task <List<TaskTimer>> GetAllTimersByProjectId(int projectId)
+        {
+            return await _db.Timers.Where(t => t.ProjectId == projectId).ToListAsync();
         }
 
     }

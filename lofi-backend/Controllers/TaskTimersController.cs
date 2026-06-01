@@ -16,16 +16,16 @@ namespace lofi_backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetTimerByTimerId(int timerId)
+        public IActionResult GetTimerByTimerId(int id)
         {
             try
             {
-                var result = _taskTimerService.GetTimerByTimerId(timerId);
+                var result = _taskTimerService.GetTimerByTimerId(id);
                 return Ok(result);
             }
             catch (Exception ex) 
             {
-                if (timerId <= 0)
+                if (id <= 0)
                 { 
                     return BadRequest(ex.Message); 
                 }
@@ -66,19 +66,40 @@ namespace lofi_backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTimer(int timerId)
+        public async Task<IActionResult> DeleteTimer(int id)
         {
-            if(timerId <= 0)
+            if(id <= 0)
             {
                 return BadRequest("Timer id must be greater than zero.");
             }
-            var deleteTimer = _taskTimerService.DeleteTimer(timerId);
+            var deleteTimer = _taskTimerService.DeleteTimer(id);
             if(deleteTimer == null)
             {
-                return NotFound($"Timer with id {timerId} was not found.");
+                return NotFound($"Timer with id {id} was not found.");
             }
 
             return NoContent();
+        }
+
+        [HttpGet("Project/{ProjectId}")]
+        public async Task<IActionResult> GetTimerByProjectId(int projectId)
+        {
+            try
+            {
+                var result = _taskTimerService.GetTimerByTimerId(projectId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                if (projectId <= 0)
+                {
+                    return BadRequest(ex.Message);
+                }
+                else
+                {
+                    return NotFound("Project not found by projectId");
+                }
+            }
         }
     }
 }

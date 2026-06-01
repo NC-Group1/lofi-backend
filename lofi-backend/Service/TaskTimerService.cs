@@ -9,6 +9,8 @@ namespace lofi_backend.Service
         Task<TaskTimer> CreateNewTimer(TaskTimer taskTimer);
         Task<TaskTimer> EditTimer(TaskTimer timer);
         Task<TaskTimer> DeleteTimer(int timerId);
+        Task<List<TaskTimer>> GetAllTimersByProjectId(int projectId);
+
     }
     public class TaskTimerService : ITaskTimerService
     {
@@ -39,5 +41,11 @@ namespace lofi_backend.Service
         {
             return await _taskTimerRepository.DeleteTimer(id);
         }
+
+        public async Task<List<TaskTimer>> GetAllTimersByProjectId(int projectId)
+        {
+            return await _taskTimerRepository.GetAllTimersByProjectId(projectId);
+        }
+
     }
 }
