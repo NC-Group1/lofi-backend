@@ -60,6 +60,8 @@ namespace lofi_backend
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
             builder.Services.AddScoped<IPlaylistService, PlaylistService>();
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             builder.Services.AddHealthChecks().AddCheck<ApiHealthCheck>("api_health_check",
                 failureStatus: HealthStatus.Unhealthy, tags: new[] { "api", "users" }).AddCheck<DatabaseHealthCheck>("database_health_check",
@@ -84,12 +86,7 @@ namespace lofi_backend
                     options.UseSqlServer(_connectionString);
                 }
             });
-
-
-            if (builder.Environment.IsDevelopment())
-            {
-                builder.Configuration.AddUserSecrets<Program>();
-            }
+           
             var app = builder.Build();
 
             using (IServiceScope scope = app.Services.CreateScope())
