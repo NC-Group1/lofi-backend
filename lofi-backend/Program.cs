@@ -85,7 +85,7 @@ namespace lofi_backend
             //    options.Cookie.SameSite = SameSiteMode.Strict;
             //});
 
-            var bytes = Encoding.UTF8.GetBytes(builder.Configuration["Authentication: JwtSecret"]);git b
+            var bytes = Encoding.UTF8.GetBytes(builder.Configuration["Authentication: JwtSecret"]);
 
             builder.Services.AddAuthentication().AddJwtBearer(o =>
             {
