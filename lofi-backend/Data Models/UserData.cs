@@ -10,7 +10,7 @@ namespace lofi_backend.Data_Models
     {
         public UserData() { }
 
-        public UserData(string id, string username, string firstName, string lastName, string email, int age, Gender gender)
+        public UserData(string id, string username, string firstName, string lastName, string email, DateTime age, Gender gender)
         {
             Id = id;
             Username = username;
@@ -31,13 +31,13 @@ namespace lofi_backend.Data_Models
         [Required]
         public string Email { get; set; } 
         [Required]
-        public int Age { get; set; }
+        public DateTime Age { get; set; }
         [Required]
         public Gender Gender { get; set; } 
         public List<Playlist> Playlists { get; set; } = new List<Playlist>();
     }
 
-    public class AuthToken    
+    public class AuthToken
     {
         public AuthToken() { }
 
