@@ -1,30 +1,42 @@
 ﻿using lofi_backend.Data_Models;
 using lofi_backend.Repository;
+using lofi_backend.Repository.Authentication;
+using Supabase.Gotrue;
 
 namespace lofi_backend.Service
 {
     public interface IUserService
     {
-        public User GetUser(int id);
-        public User CreateUser(User user);
-        public User EditUser(User user);
-        public User RemoveUser(int id);
-
+        public Task<AuthenticatedUser> GetUserAsync(string id, string password);
+        public Task<AuthenticatedUser> CreateUser(UserWithPassword user);
+        public UserData EditUser(UserData user);
+        public UserData RemoveUser(string id);
+        List<UserData> GetAllUsers();
     }
     public class UserService : IUserService
     {
         private readonly IUserRepository _repository;
+        private readonly IAuthenticationRepository _authRepository;
 
-        public UserService(IUserRepository repository)
+        public UserService(IUserRepository repository, IAuthenticationRepository authRepository)
         {
             _repository = repository;
+            _authRepository = authRepository;
         }
 
-        public User GetUser(int id)
+        public List<UserData> GetAllUsers()
+        {
+            return _repository.FetchAllUser();
+        }
+
+
+        public async Task<AuthenticatedUser> GetUserAsync(string id, string password)
         {
             try
             {
-                return _repository.FetchUser(id);
+                var userInDb = _repository.FetchUser(id);
+                var authToken = await _authRepository.SignInAsync(userInDb.Email, password);
+                return new AuthenticatedUser(userInDb, authToken);
             }
             catch (Exception ex)
             {
@@ -33,12 +45,18 @@ namespace lofi_backend.Service
             }
         }
 
-        public User CreateUser(User user)
+        public async Task<AuthenticatedUser> CreateUser(UserWithPassword user)
         {
             try
             {
-                var newUser = _repository.InsertUser(user);
-                return newUser;
+                var authToken = await _authRepository.SignUpAsync(user.UserData.Email, user.Password);
+
+                Console.WriteLine("new userId: " + user.UserData.Id);
+
+                user.UserData.Id = authToken.Id;
+                var newUser = _repository.InsertUser(user.UserData);
+
+                return new AuthenticatedUser(newUser, authToken);
             }
             catch (Exception ex)
             {
@@ -47,7 +65,7 @@ namespace lofi_backend.Service
             }
         }
 
-        public User EditUser(User user)
+        public UserData EditUser(UserData user)
         {
             try
             {
@@ -61,7 +79,8 @@ namespace lofi_backend.Service
                 throw;
             }
         }
-        public User RemoveUser(int id)
+
+        public UserData RemoveUser(string id)
         {
             try
             {
@@ -74,5 +93,6 @@ namespace lofi_backend.Service
                 throw;
             }
         }
-    }
+
+            }
 }
