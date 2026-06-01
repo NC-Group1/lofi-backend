@@ -10,10 +10,8 @@
 *.userosscache
 *.sln.docstates
 *.env
-lofi-backend/appsettings.json
-*/appsettings.Development.json
-*/appsettings.Production.json
 customsettings.json
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
