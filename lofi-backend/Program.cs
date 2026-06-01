@@ -57,6 +57,8 @@ namespace lofi_backend
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ITaskTimerRepository, TaskTimerRepository>();
+            builder.Services.AddScoped<ITaskTimerService, TaskTimerService>();
             builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             builder.Services.AddHealthChecks().AddCheck<ApiHealthCheck>("api_health_check",
                 failureStatus: HealthStatus.Unhealthy, tags: new[] { "api", "users" }).AddCheck<DatabaseHealthCheck>("database_health_check",
