@@ -3,15 +3,16 @@ using lofi_backend.HealthChecks;
 using lofi_backend.Repository;
 using lofi_backend.Repository.Authentication;
 using lofi_backend.Service;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.IdentityModel.Tokens;
 using Supabase;
-using System.Security.Claims;
 using System.Text;
 
 namespace lofi_backend
@@ -80,6 +81,57 @@ namespace lofi_backend
                     Console.WriteLine($"Connection: ${_connectionString}");
                     options.UseSqlServer(_connectionString);
                 }
+            });
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Configuration.AddUserSecrets<Program>();
+            }
+
+            //builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedEmail = false)
+            //    .AddEntityFrameworkStores<LoFiDbContext>()
+            //    .AddDefaultTokenProviders();
+
+            //builder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //})
+            //    .AddCookie()
+
+            //    .AddGoogle(options =>
+            //    {
+            //        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+            //        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            //        options.CallbackPath = "/signing-google";
+            //        options.Events.OnCreatingTicket = ctx =>
+            //        {
+            //            var identity = (ClaimsIdentity)ctx.Principal.Identity;
+            //            var email = ctx.User.GetProperty("email").GetString();
+            //            var name = ctx.User.GetProperty("name").GetString();
+            //            identity.AddClaim(new Claim(ClaimTypes.Email, email));
+            //            identity.AddClaim(new Claim(ClaimTypes.Name, name));
+            //            return Task.CompletedTask;
+            //        };
+            //    });
+            //builder.Services.ConfigureApplicationCookie(options =>
+            //{
+            //    options.Cookie.HttpOnly = true;
+            //    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            //    options.Cookie.SameSite = SameSiteMode.Strict;
+            //});
+
+            var bytes = Encoding.UTF8.GetBytes(builder.Configuration["Authentication: JwtSecret"]);
+
+            builder.Services.AddAuthentication().AddJwtBearer(o =>
+            {
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(bytes),
+                    ValidAudience = builder.Configuration["Authentication: ValidAudience"],
+                    ValidIssuer = builder.Configuration["Authentication: ValidIssuer"]
+                };
             });
 
             if (builder.Environment.IsDevelopment())
