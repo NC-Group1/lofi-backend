@@ -30,22 +30,22 @@ namespace lofi_backend.Repository
         }
         public Music GetMusicById(int id)
         {
-            return _db.Musics.ToList().First(m => m.Id == id) ?? throw new Exception("Music not found");
+            return _db.Music.ToList().First(m => m.Id == id) ?? throw new Exception("Music not found");
         }
         public Music CreateMusic(Music music)
         {
-            if (_db.Musics.Contains(music)) throw new Exception("Music exists");
-            var newMusic = _db.Musics.Add(music).Entity;
+            if (_db.Music.Contains(music)) throw new Exception("Music exists");
+            var newMusic = _db.Music.Add(music).Entity;
             Console.WriteLine(newMusic.Title + " has been saved");
             _db.SaveChanges();
             return newMusic;
         }
         public Music RemoveMusic(int id)
         {
-            var deletedMusic = _db.Musics.First(m => m.Id == id);
+            var deletedMusic = _db.Music.First(m => m.Id == id);
             if (deletedMusic == null)
                 throw new Exception("Music does not exist");
-            _db.Musics.Remove(deletedMusic);
+            _db.Music.Remove(deletedMusic);
             _db.SaveChanges();
             return deletedMusic;
         }
