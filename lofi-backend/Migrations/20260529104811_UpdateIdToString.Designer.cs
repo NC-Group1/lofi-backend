@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using lofi_backend.Database;
 
@@ -11,9 +12,11 @@ using lofi_backend.Database;
 namespace lofi_backend.Migrations
 {
     [DbContext(typeof(LoFiDbContext))]
-    partial class LoFiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260529104811_UpdateIdToString")]
+    partial class UpdateIdToString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,12 +83,12 @@ namespace lofi_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserDataId")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserDataId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Playlists");
                 });
@@ -146,7 +149,7 @@ namespace lofi_backend.Migrations
                     b.ToTable("Timers");
                 });
 
-            modelBuilder.Entity("lofi_backend.Data_Models.UserData", b =>
+            modelBuilder.Entity("lofi_backend.Data_Models.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -187,9 +190,9 @@ namespace lofi_backend.Migrations
 
             modelBuilder.Entity("lofi_backend.Data_Models.Playlist", b =>
                 {
-                    b.HasOne("lofi_backend.Data_Models.UserData", null)
+                    b.HasOne("lofi_backend.Data_Models.User", null)
                         .WithMany("Playlists")
-                        .HasForeignKey("UserDataId");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("lofi_backend.Data_Models.TaskTimer", b =>
@@ -211,7 +214,7 @@ namespace lofi_backend.Migrations
                     b.Navigation("Timers");
                 });
 
-            modelBuilder.Entity("lofi_backend.Data_Models.UserData", b =>
+            modelBuilder.Entity("lofi_backend.Data_Models.User", b =>
                 {
                     b.Navigation("Playlists");
                 });

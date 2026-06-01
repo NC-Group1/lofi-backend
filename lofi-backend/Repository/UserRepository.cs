@@ -1,15 +1,17 @@
 ﻿using lofi_backend.Data_Models;
 using lofi_backend.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace lofi_backend.Repository
 {
     public interface IUserRepository
     {
-        public User FetchUser(int id);
-        public User InsertUser(User user);
-        public User UpdateUser(User user);
-        public User DeleteUser(int id);
+        public UserData FetchUser(string id);
+        public UserData InsertUser(UserData user);
+        public UserData UpdateUser(UserData user);
+        public UserData DeleteUser(string id);
+        List<UserData> FetchAllUser();
     }
     public class UserRepository : IUserRepository
     {
@@ -19,23 +21,29 @@ namespace lofi_backend.Repository
         {
             _db = dbContext;
         }
+        public List<UserData> FetchAllUser()
+        {
+            if (_db.Users.ToList().IsNullOrEmpty()) throw new Exception("No users found");
+            return _db.Users.ToList();
+        }
 
-        public User FetchUser(int id)
+        public UserData FetchUser(string id)
         {
             return _db.Users.ToList().First(u => u.Id == id) ?? throw new Exception("User not found");
         }
 
-        public User InsertUser(User user)
+        public UserData InsertUser(UserData user)
         {
             if (_db.Users.Contains(user)) throw new Exception("User exists");
 
             var newUser = _db.Users.Add(user).Entity;
+            Console.WriteLine(newUser.Username + " has been saved");
             _db.SaveChanges();
 
             return newUser;
         }
 
-        public User UpdateUser(User user)
+        public UserData UpdateUser(UserData user)
         {
             if (!_db.Users.Contains(user)) throw new Exception("User does not exists");
 
@@ -44,7 +52,7 @@ namespace lofi_backend.Repository
             return updatedUser;
         }
         
-        public User DeleteUser(int id)
+        public UserData DeleteUser(string id)
         {
             var deletedUser = _db.Users.First(u => u.Id == id);
 
