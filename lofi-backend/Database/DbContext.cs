@@ -28,7 +28,7 @@ namespace lofi_backend.Database
                     {
                         Id = "test1", Username = "studyowl",
                         FirstName = "Emma", LastName = "Thompson",
-                        Email = "emma.thompson@example.com", DateOfBirth = new DateTime(1988, 4, 12), Gender = Gender.Female
+                        Email = "emma.thompson@example.com", DateOfBirth = new DateTime(1988, 4, 12), Gender = Gender.Female, Playlists = new List<Playlist>()
                     },
                     new UserData
                     {
@@ -69,6 +69,82 @@ namespace lofi_backend.Database
                         StartDate = new DateTime(2026, 6, 22, 13, 0, 0),
                         EndDate = new DateTime(2026, 6, 22, 14, 0, 0), Timers = new List<TaskTimer>()
                     }
+                );
+
+                modelBuilder.Entity<TaskTimer>().HasData(
+                    new TaskTimer
+                    {
+                        Id = 1, ProjectId = 1, DateCreated = new DateTime(2026, 1, 6, 13, 0, 0),
+                        DateUpdated = new DateTime(2026, 1, 6, 14, 0, 0), Duration = 3600, IsActive = false
+                    },
+                    new TaskTimer
+                    {
+                        Id = 2, ProjectId = 2, DateCreated = new DateTime(2026, 6, 16, 12, 0, 0),
+                        DateUpdated = new DateTime(2026, 6, 16, 14, 30, 0), Duration = 9000, IsActive = false
+                    },
+                    new TaskTimer
+                    {
+                        Id = 3, ProjectId = 3, DateCreated = new DateTime(2026, 6, 17, 10, 0, 0),
+                        DateUpdated = new DateTime(2026, 6, 17, 12, 15, 0), Duration = 8100, IsActive = false
+                    },
+                    new TaskTimer
+                    {
+                        Id = 4, ProjectId = 4, DateCreated = new DateTime(2026, 6, 22, 13, 0, 0),
+                        DateUpdated = new DateTime(2026, 6, 22, 13, 45, 0), Duration = 2700, IsActive = false
+                    }
+                );
+
+                modelBuilder.Entity<Music>().HasData(
+                    new Music
+                    {
+                        Id = 1, Title = "Chillhop Essentials - Spring 2026",
+                        Artist = "Various Artists", Channel = "Chillhop Essentials",
+                        Mood = Mood.Relax, Genre = Genre.LoFi, URL = "https://example.com/music/chillhop-spring-2026.mp3"
+                    },
+                    new Music
+                    {
+                        Id = 2, Title = "Lofi Study Beats",
+                        Artist = "DJ Sleepy", Channel = "Lofi Vibes",
+                        Mood = Mood.Study, Genre = Genre.Chill, URL = "https://example.com/music/lofi-study-beats.mp3"
+                    },
+                    new Music
+                    {
+                        Id = 3, Title = "Late Night Lo-Fi",
+                        Artist = "Night Owl", Channel = "Midnight Moods",
+                        Mood = Mood.Sleep, Genre = Genre.LoFi, URL = "https://example.com/music/late-night-lofi.mp3"
+                    }
+                );
+
+                modelBuilder.Entity<Playlist>().HasData(
+                    new Playlist
+                    {
+                        Id = "playlist1",
+                        Name = "Morning Focus",
+                        Mood = Mood.Focus,
+                        Genre = Genre.LoFi,
+                        Songs = new List<Music>()
+
+                    },
+
+                    new Playlist
+                    {
+                        Id = "playlist2",
+                        Name = "Relaxing Evening",
+                        Mood = Mood.Relax,
+                        Genre = Genre.Chill,
+                        Songs = new List<Music>()
+                    },
+
+                    new Playlist
+                    {
+                        Id = "playlist3",
+                        Name = "Sleepy Time",
+                        Mood = Mood.Sleep,
+                        Genre = Genre.LoFi,
+                        Songs = new List<Music>()
+                    }
+
+
                 );
             }
         }
