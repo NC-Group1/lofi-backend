@@ -44,8 +44,8 @@ namespace lofi_backend.Migrations
                     b.Property<int>("Mood")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PlaylistId")
-                        .HasColumnType("int");
+                    b.Property<string>("PlaylistId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -64,11 +64,8 @@ namespace lofi_backend.Migrations
 
             modelBuilder.Entity("lofi_backend.Data_Models.Playlist", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Genre")
                         .HasColumnType("int");
@@ -108,8 +105,9 @@ namespace lofi_backend.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -151,8 +149,8 @@ namespace lofi_backend.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()

@@ -12,12 +12,9 @@ namespace lofi_backend.Database
         public DbSet<Project> Projects { get; set; }
         public DbSet<UserData> Users { get; set; }
 
-        public LoFiDbContext(DbContextOptions<LoFiDbContext> options) : base(options) { }
+        public LoFiDbContext(DbContextOptions<LoFiDbContext> options) : base(options) {}
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-
-        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,30 +23,45 @@ namespace lofi_backend.Database
                 modelBuilder.Entity<UserData>().HasData(
                     new UserData
                     {
-                        Id = "test1", Username = "studyowl",
-                        FirstName = "Emma", LastName = "Thompson",
-                        Email = "emma.thompson@example.com", DateOfBirth = new DateTime(1988, 4, 12), Gender = Gender.Female, Playlists = new List<Playlist>()
+                        Id = "test1", 
+                        Username = "studyowl",
+                        FirstName = "Emma", 
+                        LastName = "Thompson",
+                        Email = "emma.thompson@example.com", 
+                        DateOfBirth = new DateTime(1988, 4, 12), 
+                        Gender = Gender.Female, 
                     },
                     new UserData
                     {
-                        Id = "test2", Username = "lofilover",
-                        FirstName = "Matthew", LastName = "Painter",
-                        Email = "matthew.p@example.com", DateOfBirth = new DateTime(1995, 11, 3), Gender = Gender.Male
+                        Id = "test2", 
+                        Username = "lofilover",
+                        FirstName = "Matthew", 
+                        LastName = "Painter",
+                        Email = "matthew.p@example.com", 
+                        DateOfBirth = new DateTime(1995, 11, 3), 
+                        Gender = Gender.Male
                     },
                     new UserData
                     {
-                        Id = "test3", Username = "nightwave", 
-                        FirstName = "Sofia", LastName = "Nguyen",
-                        Email = "s.nguyen@example.com", DateOfBirth = new DateTime(2000, 9, 5), Gender = Gender.NonBinary
+                        Id = "test3", 
+                        Username = "nightwave", 
+                        FirstName = "Sofia", 
+                        LastName = "Nguyen",
+                        Email = "s.nguyen@example.com", 
+                        DateOfBirth = new DateTime(2000, 9, 5), 
+                        Gender = Gender.NonBinary
                     }
                 );
 
                 modelBuilder.Entity<Project>().HasData(
                     new Project
                     {
-                        Id = 1, UserId = "test1", Name = "Portfolio Website",
+                        Id = 1, 
+                        UserId = "test1", 
+                        Name = "Portfolio Website",
                         StartDate = new DateTime(2026, 1, 6, 13, 0, 0), 
-                        EndDate = new DateTime(2026, 1, 7, 13, 0, 0), Timers = new List<TaskTimer>()
+                        EndDate = new DateTime(2026, 1, 7, 13, 0, 0), 
+                        Timers = new List<TaskTimer>()
                     },
                     new Project
                     {
@@ -143,8 +155,6 @@ namespace lofi_backend.Database
                         Genre = Genre.LoFi,
                         Songs = new List<Music>()
                     }
-
-
                 );
             }
         }

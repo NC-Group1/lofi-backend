@@ -26,7 +26,7 @@ namespace Testing.Users
         public async Task GetUser_ReturnsUser()
         {
             var expectedUser = new UserData(
-                id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30, gender: 0);
+                id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
             var authUser = new AuthenticatedUser(expectedUser, new AuthToken("", "", "", "", "", ""));
             _mockService.Setup(service => service.GetUserAsync(1.ToString(), "")).ReturnsAsync(authUser);
 
@@ -49,7 +49,7 @@ namespace Testing.Users
         [Test]
         public async Task CreateUser_ReturnsCreatedUser()
         {
-            var userToCreate =new UserWithPassword(new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30, gender: 0), "");
+            var userToCreate =new UserWithPassword(new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0), "");
             var authUser = new AuthenticatedUser(userToCreate.UserData, new AuthToken("", "", "", "", "", ""));
             _mockService.Setup(service => service.CreateUser(userToCreate)).ReturnsAsync(authUser);
 
@@ -62,7 +62,7 @@ namespace Testing.Users
         [Test]
         public async Task CreateUser_UserExists()
         {
-            var userToCreate =new UserWithPassword(new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30, gender: 0), "");
+            var userToCreate =new UserWithPassword(new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0), "");
             var authUser = new AuthenticatedUser(userToCreate.UserData, new AuthToken("", "", "", "", "", ""));
             _mockService.Setup(service => service.CreateUser(userToCreate)).ThrowsAsync(new Exception());
 
@@ -76,7 +76,7 @@ namespace Testing.Users
         [Test]
         public void EditUser_ReturnsUpdatedUser()
         {
-            var updatedUser = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30, gender: 0);
+            var updatedUser = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
 
             _mockService.Setup(service => service.EditUser(updatedUser)).Returns(updatedUser);
 
@@ -89,7 +89,7 @@ namespace Testing.Users
         [Test]
         public void EditUser_UserDoesNotExist()
         {
-            var updatedUser = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30, gender: 0);
+            var updatedUser = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
             _mockService.Setup(service => service.EditUser(updatedUser)).Throws(new Exception());
 
             var result = _userController.EditUser(updatedUser);
@@ -99,7 +99,7 @@ namespace Testing.Users
         [Test]
         public void DeleteUser_UserExists()
         {
-            var deletedUser = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30, gender: 0);
+            var deletedUser = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
 
             _mockService.Setup(service => service.RemoveUser(1.ToString())).Returns(deletedUser);
 
