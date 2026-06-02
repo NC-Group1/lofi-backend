@@ -12,8 +12,8 @@ using lofi_backend.Database;
 namespace lofi_backend.Migrations
 {
     [DbContext(typeof(LoFiDbContext))]
-    [Migration("20260529104811_UpdateIdToString")]
-    partial class UpdateIdToString
+    [Migration("20260602061053_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,8 +47,8 @@ namespace lofi_backend.Migrations
                     b.Property<int>("Mood")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PlaylistId")
-                        .HasColumnType("int");
+                    b.Property<string>("PlaylistId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -67,11 +67,8 @@ namespace lofi_backend.Migrations
 
             modelBuilder.Entity("lofi_backend.Data_Models.Playlist", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Genre")
                         .HasColumnType("int");
@@ -83,12 +80,12 @@ namespace lofi_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("UserDataId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserDataId");
 
                     b.ToTable("Playlists");
                 });
@@ -111,8 +108,9 @@ namespace lofi_backend.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -149,13 +147,13 @@ namespace lofi_backend.Migrations
                     b.ToTable("Timers");
                 });
 
-            modelBuilder.Entity("lofi_backend.Data_Models.User", b =>
+            modelBuilder.Entity("lofi_backend.Data_Models.UserData", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -190,9 +188,9 @@ namespace lofi_backend.Migrations
 
             modelBuilder.Entity("lofi_backend.Data_Models.Playlist", b =>
                 {
-                    b.HasOne("lofi_backend.Data_Models.User", null)
+                    b.HasOne("lofi_backend.Data_Models.UserData", null)
                         .WithMany("Playlists")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserDataId");
                 });
 
             modelBuilder.Entity("lofi_backend.Data_Models.TaskTimer", b =>
@@ -214,7 +212,7 @@ namespace lofi_backend.Migrations
                     b.Navigation("Timers");
                 });
 
-            modelBuilder.Entity("lofi_backend.Data_Models.User", b =>
+            modelBuilder.Entity("lofi_backend.Data_Models.UserData", b =>
                 {
                     b.Navigation("Playlists");
                 });

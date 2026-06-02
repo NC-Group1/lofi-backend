@@ -31,7 +31,7 @@ public class ControllerTesting
                 StartDate = new DateTime(2026, 1, 15),
                 EndDate = new DateTime(2026, 4, 30),
                 Timers = new List<TaskTimer>(),
-                UserId = 101
+                UserId = "101"
             },
             new Project
             {
@@ -40,7 +40,7 @@ public class ControllerTesting
                 StartDate = new DateTime(2026, 3, 1),
                 EndDate = new DateTime(2026, 9, 15),
                 Timers = new List<TaskTimer>(),
-                UserId = 101
+                UserId = "1" 
             },
             new Project
             {
@@ -49,7 +49,7 @@ public class ControllerTesting
                 StartDate = new DateTime(2026, 5, 20),
                 EndDate = new DateTime(2026, 7, 1),
                 Timers = new List<TaskTimer>(),
-                UserId = 102
+                UserId = "102"
             }
         };
         _projectServiceMock.Setup(service => service.GetAllProjects()).Returns(projectList);
@@ -68,7 +68,7 @@ public class ControllerTesting
             StartDate = new DateTime(2026, 1, 15),
             EndDate = new DateTime(2026, 4, 30),
             Timers = new List<TaskTimer>(),
-            UserId = 101
+            UserId = "101"
         };
 
         _projectServiceMock.Setup(service => service.GetProject(1)).Returns(project);
@@ -87,7 +87,7 @@ public class ControllerTesting
             StartDate = new DateTime(2026, 1, 15),
             EndDate = new DateTime(2026, 4, 30),
             Timers = new List<TaskTimer>(),
-            UserId = 101
+            UserId = "101"
         };
         _projectServiceMock.Setup(service => service.CreateProject(project)).ReturnsAsync(project);
 
@@ -108,7 +108,7 @@ public class ControllerTesting
             StartDate = new DateTime(2026, 1, 15),
             EndDate = new DateTime(2026, 4, 30),
             Timers = new List<TaskTimer>(),
-            UserId = 101
+            UserId = "101"
         };
         _projectServiceMock.Setup(service => service.DeleteProject(1)).ReturnsAsync(project);
         var result = await _projectsController.DeleteProject(1) as ObjectResult;
@@ -148,7 +148,7 @@ public class ControllerTesting
             StartDate = new DateTime(2026, 1, 15),
             EndDate = new DateTime(2026, 4, 30),
             Timers = new List<TaskTimer>(),
-            UserId = 101
+            UserId = "101"
         };
         var updatedProject = new Project
         {
@@ -157,7 +157,7 @@ public class ControllerTesting
             StartDate = new DateTime(2026, 3, 1),
             EndDate = new DateTime(2026, 9, 15),
             Timers = new List<TaskTimer>(),
-            UserId = 101
+            UserId = "101"
         };
 
         _projectServiceMock.Setup(service => service.EditProject(updatedProject)).ReturnsAsync(updatedProject);
@@ -179,7 +179,7 @@ public class ControllerTesting
             StartDate = new DateTime(2026, 3, 1),
             EndDate = new DateTime(2026, 9, 15),
             Timers = new List<TaskTimer>(),
-            UserId = 101
+            UserId = "101"
         };
         _projectServiceMock.Setup(service => service.EditProject(updatedProject)).Throws(new Exception());
 

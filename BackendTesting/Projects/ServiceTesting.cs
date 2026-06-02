@@ -34,7 +34,7 @@ internal class ServiceTesting
                 StartDate = new DateTime(2026, 1, 15),
                 EndDate = new DateTime(2026, 4, 30),
                 Timers = new List<TaskTimer>(),
-                UserId = 101
+                UserId = "101"
             },
             new Project
             {
@@ -43,7 +43,7 @@ internal class ServiceTesting
                 StartDate = new DateTime(2026, 3, 1),
                 EndDate = new DateTime(2026, 9, 15),
                 Timers = new List<TaskTimer>(),
-                UserId = 101
+                UserId = "101"
             },
             new Project
             {
@@ -52,7 +52,7 @@ internal class ServiceTesting
                 StartDate = new DateTime(2026, 5, 20),
                 EndDate = new DateTime(2026, 7, 1),
                 Timers = new List<TaskTimer>(),
-                UserId = 102
+                UserId = "102"
             }
         };
         _mockRepo.Setup(repo => repo.GetAllProjects()).Returns(projectList);
@@ -70,7 +70,7 @@ internal class ServiceTesting
             StartDate = new DateTime(2026, 1, 15),
             EndDate = new DateTime(2026, 4, 30),
             Timers = new List<TaskTimer>(),
-            UserId = 101
+            UserId = "101"
         };
         _mockRepo.Setup(repo => repo.GetProject(1)).Returns(project);
         var result = _projectService.GetProject(1);
@@ -86,7 +86,7 @@ internal class ServiceTesting
             StartDate = new DateTime(2026, 1, 15),
             EndDate = new DateTime(2026, 4, 30),
             Timers = new List<TaskTimer>(),
-            UserId = 101
+            UserId = "101"
         };
         _mockRepo.Setup(repo => repo.CreateProject(project)).ReturnsAsync(project);
         var result = await _projectService.CreateProject(project);
@@ -104,7 +104,7 @@ internal class ServiceTesting
             StartDate = new DateTime(2026, 1, 15),
             EndDate = new DateTime(2026, 4, 30),
             Timers = new List<TaskTimer>(),
-            UserId = 101
+            UserId = "101"
         };
         _mockRepo.Setup(repo => repo.DeleteProject(1)).ReturnsAsync(project);
         var result = await _projectService.DeleteProject(1);
@@ -124,7 +124,7 @@ internal class ServiceTesting
             StartDate = new DateTime(2026, 1, 15),
             EndDate = new DateTime(2026, 4, 30),
             Timers = new List<TaskTimer>(),
-            UserId = 101
+            UserId = "101"
         };
         var updatedProject = new Project
         {
@@ -133,7 +133,7 @@ internal class ServiceTesting
             StartDate = new DateTime(2026, 3, 1),
             EndDate = new DateTime(2026, 9, 15),
             Timers = new List<TaskTimer>(),
-            UserId = 101
+            UserId = "101"
         };
 
         _mockRepo.Setup(repo => repo.EditProject(updatedProject)).ReturnsAsync(updatedProject);

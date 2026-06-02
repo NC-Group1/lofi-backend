@@ -20,7 +20,7 @@ namespace lofi_backend.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,12 +31,12 @@ namespace lofi_backend.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -71,19 +71,18 @@ namespace lofi_backend.Migrations
                 name: "Playlists",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Mood = table.Column<int>(type: "int", nullable: false),
                     Genre = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    UserDataId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Playlists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Playlists_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Playlists_Users_UserDataId",
+                        column: x => x.UserDataId,
                         principalTable: "Users",
                         principalColumn: "Id");
                 });
@@ -100,7 +99,7 @@ namespace lofi_backend.Migrations
                     Mood = table.Column<int>(type: "int", nullable: false),
                     Genre = table.Column<int>(type: "int", nullable: false),
                     URL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PlaylistId = table.Column<int>(type: "int", nullable: true)
+                    PlaylistId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -118,9 +117,9 @@ namespace lofi_backend.Migrations
                 column: "PlaylistId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Playlists_UserId",
+                name: "IX_Playlists_UserDataId",
                 table: "Playlists",
-                column: "UserId");
+                column: "UserDataId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Timers_ProjectId",
