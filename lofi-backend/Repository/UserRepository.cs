@@ -1,5 +1,6 @@
 ﻿using lofi_backend.Data_Models;
 using lofi_backend.Database;
+using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -7,7 +8,7 @@ namespace lofi_backend.Repository
 {
     public interface IUserRepository
     {
-        public UserData FetchUser(string id);
+        public UserData FetchUser(string username);
         public UserData InsertUser(UserData user);
         public UserData UpdateUser(UserData user);
         public UserData DeleteUser(string id);
@@ -21,15 +22,16 @@ namespace lofi_backend.Repository
         {
             _db = dbContext;
         }
+
         public List<UserData> FetchAllUser()
         {
             if (_db.Users.ToList().IsNullOrEmpty()) throw new Exception("No users found");
             return _db.Users.ToList();
         }
 
-        public UserData FetchUser(string id)
+        public UserData FetchUser(string username)
         {
-            return _db.Users.ToList().First(u => u.Id == id) ?? throw new Exception("User not found");
+            return _db.Users.ToList().First(u => u.Username == username) ?? throw new Exception("User not found");
         }
 
         public UserData InsertUser(UserData user)
@@ -51,7 +53,7 @@ namespace lofi_backend.Repository
             _db.SaveChanges();
             return updatedUser;
         }
-        
+
         public UserData DeleteUser(string id)
         {
             var deletedUser = _db.Users.First(u => u.Id == id);

@@ -50,7 +50,9 @@ namespace lofi_backend.Repository
         {
             var deletedTimer = _db.Timers.First(t => t.Id == timerId);
             if (deletedTimer == null)
+            {
                 throw new Exception("User does not exist");
+            }
 
             _db.Timers.Remove(deletedTimer);
 
@@ -60,9 +62,17 @@ namespace lofi_backend.Repository
 
         }
 
-        public async Task <List<TaskTimer>> GetAllTimersByProjectId(int projectId)
+        public async Task<List<TaskTimer>> GetAllTimersByProjectId(int projectId)
         {
-            return await _db.Timers.Where(t => t.ProjectId == projectId).ToListAsync();
+            var timers = await _db.Timers.Where(t => t.ProjectId == projectId).ToListAsync();
+            timers.ForEach(Console.WriteLine);
+
+            if (timers == null)
+            { 
+                throw new Exception("No Project Found"); 
+            }
+            
+            return timers;
         }
 
     }

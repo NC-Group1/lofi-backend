@@ -3,15 +3,16 @@ using lofi_backend.HealthChecks;
 using lofi_backend.Repository;
 using lofi_backend.Repository.Authentication;
 using lofi_backend.Service;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.IdentityModel.Tokens;
 using Supabase;
-using System.Security.Claims;
 using System.Text;
 
 namespace lofi_backend
@@ -57,8 +58,17 @@ namespace lofi_backend
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
+
             builder.Services.AddScoped<ITaskTimerRepository, TaskTimerRepository>();
             builder.Services.AddScoped<ITaskTimerService, TaskTimerService>();
+
+            builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
+            builder.Services.AddScoped<IPlaylistService, PlaylistService>();
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IMusicRepository, MusicRepository>();
+            builder.Services.AddScoped<IMusicService, MusicService>();
+
             builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             builder.Services.AddHealthChecks().AddCheck<ApiHealthCheck>("api_health_check",
                 failureStatus: HealthStatus.Unhealthy, tags: new[] { "api", "users" }).AddCheck<DatabaseHealthCheck>("database_health_check",
@@ -83,11 +93,7 @@ namespace lofi_backend
                     options.UseSqlServer(_connectionString);
                 }
             });
-
-            if (builder.Environment.IsDevelopment())
-            {
-                builder.Configuration.AddUserSecrets<Program>();
-            }
+           
             var app = builder.Build();
 
             using (IServiceScope scope = app.Services.CreateScope())

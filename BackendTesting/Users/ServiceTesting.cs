@@ -30,7 +30,7 @@ namespace Testing.Users
         public async Task GetUser_ReturnsUser()
         {
             // Arrange
-            var user = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30, gender: 0);
+            var user = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
             var authUser = new AuthenticatedUser(user, new AuthToken());
             _mockRepo.Setup(repo => repo.FetchUser("1")).Returns(user);
             // Act
@@ -43,7 +43,7 @@ namespace Testing.Users
         public async Task CreateUser_ReturnsCreatedUser()
         {
             // Arrange
-            var user = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30, gender: 0);
+            var user = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
 
             _mockAuth.Setup(repo => repo.SignUpAsync(user.Email, "")).ReturnsAsync(new AuthToken("1", "", "", "", "", ""));
             _mockRepo.Setup(repo => repo.InsertUser(user)).Returns(user);
@@ -56,7 +56,7 @@ namespace Testing.Users
         public void EditUser_ReturnsUpdatedUser()
         {
             // Arrange
-            var updatedUser = new UserData(id: "1", username: "Updated User", firstName: "John", lastName: "Music", email: "email@email.com", age: 30, gender: 0);
+            var updatedUser = new UserData(id: "1", username: "Updated User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
             _mockRepo.Setup(repo => repo.UpdateUser(updatedUser)).Returns(updatedUser);
 
             var result = _userService.EditUser(updatedUser);

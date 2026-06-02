@@ -54,8 +54,207 @@ public class ControllerTesting
         _mockService.Setup(service => service.CreateNewTimer(addNewtaskTimer)).ReturnsAsync(addNewtaskTimer);
         var result = await _taskTimerController.CreateNewTimer(addNewtaskTimer) as ObjectResult;
 
-        result.StatusCode.ShouldBe(StatusCodes.Status200OK);
+        result.StatusCode.ShouldBe(StatusCodes.Status201Created);
 
     }
+
+    [Test]
+    public async Task EditTimer_ShouldReturnUpdatedTimer()
+    {
+        var updatedTaskTimer = new TaskTimer
+        {
+            Id = 1,
+            DateCreated = new DateTime(2026, 6, 1, 9, 0, 0),
+            DateUpdated = new DateTime(2026, 6, 1, 10, 30, 0),
+            Duration = 5400, // 1 hour 30 minutes
+            IsActive = false,
+            ProjectId = 1
+        };
+        _mockService.Setup(service => service.EditTimer(updatedTaskTimer)).ReturnsAsync(updatedTaskTimer);
+
+        var result = await _taskTimerController.EditTimer(updatedTaskTimer) as ObjectResult;
+
+        result.StatusCode.ShouldBe(StatusCodes.Status200OK);
+        result.ShouldBeOfType<OkObjectResult>();
+    }
+
+    [Test]
+    public async Task EditTimer_ShouldReturnBadRequest()
+    {
+        var updatedTaskTimer = new TaskTimer
+        {
+            Id = 1,
+            DateCreated = new DateTime(2026, 6, 1, 9, 0, 0),
+            DateUpdated = new DateTime(2026, 6, 1, 10, 30, 0),
+            Duration = 5400, // 1 hour 30 minutes
+            IsActive = false,
+            ProjectId = 1
+        };
+        _mockService.Setup(service => service.EditTimer(updatedTaskTimer)).Throws(new Exception());
+
+        var result = await _taskTimerController.EditTimer(updatedTaskTimer) as ObjectResult;
+        result.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+        result.ShouldBeOfType<BadRequestObjectResult>();
+    }
+    [Test]
+    public async Task DeleteTimer_ShouldReturnNoContent()
+    {
+        var deletedTaskTimer = new TaskTimer
+        {
+            Id = 1,
+            DateCreated = new DateTime(2026, 6, 1, 9, 0, 0),
+            DateUpdated = new DateTime(2026, 6, 1, 10, 30, 0),
+            Duration = 5400, // 1 hour 30 minutes
+            IsActive = false,
+            ProjectId = 1
+        };
+
+        _mockService.Setup(service => service.DeleteTimer(1)).ReturnsAsync(deletedTaskTimer);
+
+        var result = await _taskTimerController.DeleteTimer(1);
+
+        result.ShouldBeOfType<NoContentResult>();
+    }
+
+    [Test]
+    public async Task DeleteTimer_ShouldReturnNotFound_WhenTimerDoesNotExist()
+    {
+        _mockService.Setup(service => service.DeleteTimer(99)).ThrowsAsync( new Exception("Timer not found"));
+        var result = await _taskTimerController.DeleteTimer(99) as ObjectResult;
+
+        result.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
+        result.ShouldBeOfType<NotFoundObjectResult>();
+    }
+    [Test]
+    public async Task GetTimerByProjectId_ShouldReturnOk()
+    {
+        var taskTimers = new List<TaskTimer>
+        {
+            new TaskTimer
+            {
+                Id = 1,
+                DateCreated = new DateTime(2026, 6, 1, 9, 0, 0),
+                DateUpdated = new DateTime(2026, 6, 1, 10, 30, 0),
+                Duration = 5400, // 1 hour 30 minutes
+                IsActive = false,
+                ProjectId = 1
+            },
+
+            new TaskTimer
+            {
+                Id = 2,
+                DateCreated = new DateTime(2026, 6, 2, 14, 0, 0),
+                DateUpdated = new DateTime(2026, 6, 2, 14, 25, 0),
+                Duration = 1500, // 25 minute Pomodoro
+                IsActive = false,
+                ProjectId = 1
+            },
+
+            new TaskTimer
+            {
+                Id = 3,
+                DateCreated = new DateTime(2026, 6, 3, 18, 0, 0),
+                DateUpdated = new DateTime(2026, 6, 3, 19, 0, 0),
+                Duration = 3600, // 1 hour
+                IsActive = false,
+                ProjectId = 1
+            }
+        };
+        _mockService.Setup(service => service.GetAllTimersByProjectId(1)).ReturnsAsync(taskTimers);
+
+        var result = await _taskTimerController.GetTimerByProjectId(1) as ObjectResult;
+
+        result.StatusCode.ShouldBe(StatusCodes.Status200OK);
+        result.ShouldBeOfType<OkObjectResult>();
+    }
+    [Test]
+    public async Task GetTimerByProjectId_ShouldReturnBadRequest()
+    {
+        var taskTimers = new List<TaskTimer>
+        {
+            new TaskTimer
+            {
+                Id = 1,
+                DateCreated = new DateTime(2026, 6, 1, 9, 0, 0),
+                DateUpdated = new DateTime(2026, 6, 1, 10, 30, 0),
+                Duration = 5400, // 1 hour 30 minutes
+                IsActive = false,
+                ProjectId = 1
+            },
+
+            new TaskTimer
+            {
+                Id = 2,
+                DateCreated = new DateTime(2026, 6, 2, 14, 0, 0),
+                DateUpdated = new DateTime(2026, 6, 2, 14, 25, 0),
+                Duration = 1500, // 25 minute Pomodoro
+                IsActive = false,
+                ProjectId = 1
+            },
+
+            new TaskTimer
+            {
+                Id = 3,
+                DateCreated = new DateTime(2026, 6, 3, 18, 0, 0),
+                DateUpdated = new DateTime(2026, 6, 3, 19, 0, 0),
+                Duration = 3600, // 1 hour
+                IsActive = false,
+                ProjectId = 1
+            }
+        };
+        _mockService.Setup(service => service.GetAllTimersByProjectId(-1)).ReturnsAsync(taskTimers);
+
+        var result = await _taskTimerController.GetTimerByProjectId(-1) as ObjectResult ;
+
+        result.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+        result.ShouldBeOfType<BadRequestObjectResult>();
+    }
+
+    [Test]
+    public async Task GetTimerByProjectId_ShouldReturnNotFound()
+    {
+        var taskTimers = new List<TaskTimer>
+        {
+            new TaskTimer
+            {
+                Id = 1,
+                DateCreated = new DateTime(2026, 6, 1, 9, 0, 0),
+                DateUpdated = new DateTime(2026, 6, 1, 10, 30, 0),
+                Duration = 5400, // 1 hour 30 minutes
+                IsActive = false,
+                ProjectId = 1
+            },
+
+            new TaskTimer
+            {
+                Id = 2,
+                DateCreated = new DateTime(2026, 6, 2, 14, 0, 0),
+                DateUpdated = new DateTime(2026, 6, 2, 14, 25, 0),
+                Duration = 1500, // 25 minute Pomodoro
+                IsActive = false,
+                ProjectId = 1
+            },
+
+            new TaskTimer
+            {
+                Id = 3,
+                DateCreated = new DateTime(2026, 6, 3, 18, 0, 0),
+                DateUpdated = new DateTime(2026, 6, 3, 19, 0, 0),
+                Duration = 3600, // 1 hour
+                IsActive = false,
+                ProjectId = 1
+            }
+        };
+        _mockService.Setup(service => service.GetAllTimersByProjectId(99)).ThrowsAsync( new Exception("ProjectId does not exist"));
+
+        var result = await _taskTimerController.GetTimerByProjectId(99) as ObjectResult;
+
+        result.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
+        result.ShouldBeOfType<NotFoundObjectResult>();
+    }
+
+
+
+
 
 }

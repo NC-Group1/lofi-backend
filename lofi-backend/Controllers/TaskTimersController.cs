@@ -15,7 +15,7 @@ namespace lofi_backend.Controllers
             _taskTimerService = taskTimerService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         public IActionResult GetTimerByTimerId(int id)
         {
             try
@@ -43,7 +43,7 @@ namespace lofi_backend.Controllers
             try
             {
                 var newTimer = await _taskTimerService.CreateNewTimer(taskTimer);
-                return Ok(newTimer);
+                return Created("", newTimer);
             }
             catch (Exception ex)
             {
@@ -65,40 +65,44 @@ namespace lofi_backend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteTimer(int id)
         {
             if(id <= 0)
             {
                 return BadRequest("Timer id must be greater than zero.");
-            }
-            var deleteTimer = _taskTimerService.DeleteTimer(id);
-            if(deleteTimer == null)
-            {
-                return NotFound($"Timer with id {id} was not found.");
+
             }
 
-            return NoContent();
-        }
-
-        [HttpGet("Project/{ProjectId}")]
-        public async Task<IActionResult> GetTimerByProjectId(int projectId)
-        {
             try
             {
-                var result = _taskTimerService.GetTimerByTimerId(projectId);
+                var deleteTimer = await _taskTimerService.DeleteTimer(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound($"Timer with id {id} was not found., {ex.Message}" );
+            }            
+        }
+
+        [HttpGet("Projects")]
+        
+        public async Task<IActionResult> GetTimerByProjectId(int projectId)
+        {
+            if (projectId <= 0)
+            {
+                return BadRequest("project id must be greater than zero.");
+            }
+            try
+            {
+                var result = await _taskTimerService.GetAllTimersByProjectId(projectId);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                if (projectId <= 0)
-                {
-                    return BadRequest(ex.Message);
-                }
-                else
-                {
-                    return NotFound("Project not found by projectId");
-                }
+ 
+                    return NotFound($"Project not found by projectId, {ex.Message}");
+                
             }
         }
     }
