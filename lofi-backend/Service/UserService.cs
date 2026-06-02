@@ -7,7 +7,7 @@ namespace lofi_backend.Service
 {
     public interface IUserService
     {
-        public Task<AuthenticatedUser> GetUserAsync(string id, string password);
+        public Task<AuthenticatedUser> GetUserAsync(string username, string password);
         public Task<AuthenticatedUser> CreateUser(UserWithPassword user);
         public UserData EditUser(UserData user);
         public UserData RemoveUser(string id);
@@ -30,11 +30,11 @@ namespace lofi_backend.Service
         }
 
 
-        public async Task<AuthenticatedUser> GetUserAsync(string id, string password)
+        public async Task<AuthenticatedUser> GetUserAsync(string username, string password)
         {
             try
             {
-                var userInDb = _repository.FetchUser(id);
+                var userInDb = _repository.FetchUser(username);
                 var authToken = await _authRepository.SignInAsync(userInDb.Email, password);
                 return new AuthenticatedUser(userInDb, authToken);
             }

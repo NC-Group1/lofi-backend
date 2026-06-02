@@ -37,7 +37,7 @@ namespace lofi_backend.Data_Models
         public List<Playlist> Playlists { get; set; } = new List<Playlist>();
     }
 
-    public class AuthToken    
+    public class AuthToken
     {
         public AuthToken() { }
 

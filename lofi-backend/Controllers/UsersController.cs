@@ -33,11 +33,11 @@ namespace lofi_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserAsync(string id, string password)
+        public async Task<IActionResult> GetUserAsync(string username, string password)
         {
             try
             {
-                var result = await _service.GetUserAsync(id, password);
+                var result = await _service.GetUserAsync(username, password);
                 return Ok(result);
             }                                              
             catch (Exception ex)
