@@ -62,6 +62,8 @@ namespace lofi_backend
             builder.Services.AddScoped<IPlaylistService, PlaylistService>();
             builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IMusicRepository, MusicRepository>();
+            builder.Services.AddScoped<IMusicService, MusicService>();
             builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             builder.Services.AddHealthChecks().AddCheck<ApiHealthCheck>("api_health_check",
                 failureStatus: HealthStatus.Unhealthy, tags: new[] { "api", "users" }).AddCheck<DatabaseHealthCheck>("database_health_check",
