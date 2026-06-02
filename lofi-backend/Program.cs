@@ -58,6 +58,12 @@ namespace lofi_backend
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
+            builder.Services.AddScoped<IPlaylistService, PlaylistService>();
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IMusicRepository, MusicRepository>();
+            builder.Services.AddScoped<IMusicService, MusicService>();
             builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             builder.Services.AddHealthChecks().AddCheck<ApiHealthCheck>("api_health_check",
                 failureStatus: HealthStatus.Unhealthy, tags: new[] { "api", "users" }).AddCheck<DatabaseHealthCheck>("database_health_check",
@@ -82,62 +88,7 @@ namespace lofi_backend
                     options.UseSqlServer(_connectionString);
                 }
             });
-            if (builder.Environment.IsDevelopment())
-            {
-                builder.Configuration.AddUserSecrets<Program>();
-            }
-
-            //builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedEmail = false)
-            //    .AddEntityFrameworkStores<LoFiDbContext>()
-            //    .AddDefaultTokenProviders();
-
-            //builder.Services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            //})
-            //    .AddCookie()
-
-            //    .AddGoogle(options =>
-            //    {
-            //        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-            //        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-            //        options.CallbackPath = "/signing-google";
-            //        options.Events.OnCreatingTicket = ctx =>
-            //        {
-            //            var identity = (ClaimsIdentity)ctx.Principal.Identity;
-            //            var email = ctx.User.GetProperty("email").GetString();
-            //            var name = ctx.User.GetProperty("name").GetString();
-            //            identity.AddClaim(new Claim(ClaimTypes.Email, email));
-            //            identity.AddClaim(new Claim(ClaimTypes.Name, name));
-            //            return Task.CompletedTask;
-            //        };
-            //    });
-            //builder.Services.ConfigureApplicationCookie(options =>
-            //{
-            //    options.Cookie.HttpOnly = true;
-            //    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            //    options.Cookie.SameSite = SameSiteMode.Strict;
-            //});
-
-            var bytes = Encoding.UTF8.GetBytes(builder.Configuration["Authentication: JwtSecret"]);
-
-            builder.Services.AddAuthentication().AddJwtBearer(o =>
-            {
-                o.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(bytes),
-                    ValidAudience = builder.Configuration["Authentication: ValidAudience"],
-                    ValidIssuer = builder.Configuration["Authentication: ValidIssuer"]
-                };
-            });
-
-            if (builder.Environment.IsDevelopment())
-            {
-                builder.Configuration.AddUserSecrets<Program>();
-            }
+           
             var app = builder.Build();
 
             using (IServiceScope scope = app.Services.CreateScope())

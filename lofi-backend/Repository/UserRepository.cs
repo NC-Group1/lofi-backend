@@ -53,7 +53,7 @@ namespace lofi_backend.Repository
             _db.SaveChanges();
             return updatedUser;
         }
-        
+
         public UserData DeleteUser(string id)
         {
             var deletedUser = _db.Users.First(u => u.Id == id);
