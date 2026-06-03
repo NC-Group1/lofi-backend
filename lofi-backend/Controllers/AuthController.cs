@@ -12,7 +12,7 @@ namespace lofi_backend.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly Client _supabaseClient = supabaseClient;
+        private readonly Supabase.Client _supabaseClient;
 
         public AuthController(Supabase.Client supabaseClient)
         {
