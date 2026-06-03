@@ -19,11 +19,18 @@ namespace lofi_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ForwardPassword(string email)
+        public async Task<IActionResult> ForwardPassword([FromBody] string email)
         {
+            // email will be the raw JSON string, e.g. "example@gmail.com"
             try
             {
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    return BadRequest("Email is required.");
+                }
+
                 Console.WriteLine($"Received email for password reset: {email}");
+
                 var options = new ResetPasswordForEmailOptions(email)
                 {
                     RedirectTo = "https://localhost:5082/Login"
@@ -37,8 +44,7 @@ namespace lofi_backend.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error sending password reset email: {ex.Message}");
-                return BadRequest("Email is required.");
-
+                return BadRequest("Error sending password reset email.");
             }
         }
     }
