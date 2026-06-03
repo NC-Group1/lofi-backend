@@ -47,6 +47,7 @@ namespace lofi_backend.Controllers
             }
         }
 
+
         [HttpPost]
         public async Task<IActionResult> CreateUserAsync([FromBody] UserWithPassword user)
         {
