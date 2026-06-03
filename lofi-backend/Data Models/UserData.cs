@@ -37,42 +37,7 @@ namespace lofi_backend.Data_Models
         public List<Playlist> Playlists { get; set; } = new List<Playlist>();
     }
 
-    public class AuthToken
-    {
-        public AuthToken() { }
-
-        public AuthToken(string id, string accessToken, string tokenType, string refreshToken, string expiresIn, string expiresAt)
-        {
-            Id = id;
-            AccessToken = accessToken;
-            TokenType = tokenType;
-            RefreshToken = refreshToken;
-            ExpiresIn = expiresIn;
-            ExpiresAt = expiresAt;
-        }
-
-        public string Id { get; set; }
-        public string AccessToken {  get; set; } 
-        public string TokenType { get; set; } 
-        public string RefreshToken { get; set; }
-        public string ExpiresIn { get; set; }        
-        public string ExpiresAt { get; set; }
-    }
-
-    public class AuthenticatedUser
-    {
-        public AuthenticatedUser() { }
-
-        public AuthenticatedUser(UserData user, AuthToken authToken)
-        {
-            UserData = user;
-            AuthToken = authToken;
-        }
-
-        public UserData UserData { get; set; }
-        public AuthToken AuthToken { get; set; }
-    }
-
+    
     public class  UserWithPassword
     {
         public UserWithPassword() { }

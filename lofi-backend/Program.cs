@@ -1,7 +1,6 @@
 using lofi_backend.Database;
 using lofi_backend.HealthChecks;
 using lofi_backend.Repository;
-using lofi_backend.Repository.Authentication;
 using lofi_backend.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -14,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Supabase;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace lofi_backend
 {
@@ -27,13 +27,15 @@ namespace lofi_backend
 
             var supabaseUrl = builder.Configuration["Supabase:Url"]!;
             var supabaseKey = builder.Configuration["Supabase:Key"]!;
+            var supabaseJwtSecret = builder.Configuration["Supabase:JwtKey"]!;
+
             var options = new SupabaseOptions
             {
                 AutoRefreshToken = true,
                 AutoConnectRealtime = true
             };
 
-            var supabaseSignatureKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(supabaseKey));
+            var supabaseSignatureKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(supabaseJwtSecret));
             var validIssuers = supabaseUrl + "/auth/v1";
             List<string> validAudiences = ["authenticated"];
 
@@ -45,12 +47,27 @@ namespace lofi_backend
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = supabaseSignatureKey,
-                    ValidIssuer = validIssuers
+                    ValidateIssuer = true,
+                    ValidIssuer = validIssuers,
+                    ValidateAudience = true,
+                    ValidAudiences = ["authenticated"],
+                    ValidateLifetime = true
+                };
+                o.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context => 
+                    { 
+                        if (context.Request.Cookies.TryGetValue("supabase_jwt", out var token))
+                        {
+                            context.Token = token;
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             });
 
             builder.Services.AddSingleton(provider => 
-                new Supabase.Client(supabaseUrl, supabaseKey, options));
+                new Client(supabaseUrl, supabaseKey, options));
 
             // Add services to the container.
 
@@ -72,7 +89,6 @@ namespace lofi_backend
             builder.Services.AddScoped<IMusicRepository, MusicRepository>();
             builder.Services.AddScoped<IMusicService, MusicService>();
 
-            builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             builder.Services.AddHealthChecks().AddCheck<ApiHealthCheck>("api_health_check",
                 failureStatus: HealthStatus.Unhealthy, tags: new[] { "api", "users" }).AddCheck<DatabaseHealthCheck>("database_health_check",
                 failureStatus: HealthStatus.Unhealthy, tags: new[] {"database", "users" });
