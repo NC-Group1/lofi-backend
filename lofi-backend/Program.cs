@@ -1,7 +1,6 @@
 using lofi_backend.Database;
 using lofi_backend.HealthChecks;
 using lofi_backend.Repository;
-using lofi_backend.Repository.Authentication;
 using lofi_backend.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -69,7 +68,6 @@ namespace lofi_backend
             builder.Services.AddScoped<IMusicRepository, MusicRepository>();
             builder.Services.AddScoped<IMusicService, MusicService>();
 
-            builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             builder.Services.AddHealthChecks().AddCheck<ApiHealthCheck>("api_health_check",
                 failureStatus: HealthStatus.Unhealthy, tags: new[] { "api", "users" }).AddCheck<DatabaseHealthCheck>("database_health_check",
                 failureStatus: HealthStatus.Unhealthy, tags: new[] {"database", "users" });

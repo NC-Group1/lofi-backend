@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Shouldly;
 
-namespace Testing.Playlist
+namespace Testing.PlaylistTests
 {
     internal class PlaylistControllerTesting
     {
@@ -29,9 +29,9 @@ namespace Testing.Playlist
         public void GetAllPlaylists_ReturnsListOfPlaylists()
         {
             // Arrange
-            var testPlaylists = new List<lofi_backend.Data_Models.Playlist>
+            var testPlaylists = new List<Playlist>
             {
-                new lofi_backend.Data_Models.Playlist
+                new Playlist
                 {
                     Id = "1",
                     Name = "Test Playlist 1",

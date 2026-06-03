@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Shouldly;
 
-namespace Testing.Users
+namespace Testing.UsersControllerTesting
 {
-    public class Tests
+    public class ControllerTesting
     {
         private Mock<IUserService> _mockService;
         private UsersController _userController;
@@ -27,12 +27,11 @@ namespace Testing.Users
         {
             var expectedUser = new UserData(
                 id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
-            var authUser = new AuthenticatedUser(expectedUser, new AuthToken("", "", "", "", "", ""));
-            _mockService.Setup(service => service.GetUserAsync(1.ToString(), "")).ReturnsAsync(authUser);
+            _mockService.Setup(service => service.GetUserAsync(1.ToString(), "")).ReturnsAsync(expectedUser);
 
             var result = await _userController.GetUserAsync("1", "123456") as ObjectResult;
 
-            result.StatusCode.ShouldBe(StatusCodes.Status200OK);
+            result?.StatusCode.ShouldBe(StatusCodes.Status200OK);
         }
 
         [Test]
@@ -42,35 +41,33 @@ namespace Testing.Users
 
             var result = await _userController.GetUserAsync("1", "") as NotFoundResult;
 
-            Console.WriteLine(result.StatusCode);
-            result.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
+            Console.WriteLine(result?.StatusCode);
+            result?.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
         }
 
         [Test]
         public async Task CreateUser_ReturnsCreatedUser()
         {
-            var userToCreate =new UserWithPassword(new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0), "");
-            var authUser = new AuthenticatedUser(userToCreate.UserData, new AuthToken("", "", "", "", "", ""));
-            _mockService.Setup(service => service.CreateUser(userToCreate)).ReturnsAsync(authUser);
+            var expectedUser = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
+            var userToCreate =new UserWithPassword(expectedUser, "");
+            _mockService.Setup(service => service.CreateUser(userToCreate)).ReturnsAsync(expectedUser);
 
             var result = await _userController.CreateUserAsync(userToCreate) as ObjectResult;
 
-            result.StatusCode.ShouldBe(StatusCodes.Status200OK);
-            result.Value.ShouldBe(authUser);
+            result?.StatusCode.ShouldBe(StatusCodes.Status200OK);
+            result?.Value.ShouldBe(userToCreate);
         }
 
         [Test]
         public async Task CreateUser_UserExists()
         {
             var userToCreate =new UserWithPassword(new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0), "");
-            var authUser = new AuthenticatedUser(userToCreate.UserData, new AuthToken("", "", "", "", "", ""));
             _mockService.Setup(service => service.CreateUser(userToCreate)).ThrowsAsync(new Exception());
 
             var result = await _userController.CreateUserAsync(userToCreate) as ObjectResult;
 
-            result.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
-            result.ShouldBeOfType<BadRequestObjectResult>();
-
+            result?.StatusCode.ShouldBe(StatusCodes.Status400BadRequest);
+            result?.ShouldBeOfType<BadRequestObjectResult>();
         }
 
         [Test]
@@ -83,7 +80,6 @@ namespace Testing.Users
             var result = _userController.EditUser(updatedUser);
 
             result.ShouldBeOfType<OkObjectResult>();
-
         }
 
         [Test]
@@ -94,8 +90,8 @@ namespace Testing.Users
 
             var result = _userController.EditUser(updatedUser);
             result.ShouldBeOfType<BadRequestObjectResult>();
-
         }
+
         [Test]
         public void DeleteUser_UserExists()
         {

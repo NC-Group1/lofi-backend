@@ -1,6 +1,5 @@
 using lofi_backend.Data_Models;
 using lofi_backend.Service;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace lofi_backend.Controllers

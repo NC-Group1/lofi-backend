@@ -10,7 +10,7 @@ using lofi_backend.Data_Models;
 using Shouldly;
 
 
-namespace Testing.Music
+namespace Testing.MusicTesting
 {
     internal class MusicServiceTests
     {

@@ -10,9 +10,9 @@ using lofi_backend.Data_Models;
 using lofi_backend.Repository.Authentication;
 using Shouldly;
 
-namespace Testing.Users
+namespace Testing.UsersServiceTesting
 {
-    internal class ServiceTesting
+    internal class UsersServiceTesting
     {
         private Mock<IUserRepository> _mockRepo;
         private Mock<IAuthenticationRepository> _mockAuth;
@@ -31,7 +31,7 @@ namespace Testing.Users
         {
             // Arrange
             var user = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
-            var authUser = new AuthenticatedUser(user, new AuthToken());
+            var authUser = new AuthenticatedUser(user, new CookieOptions());
             _mockRepo.Setup(repo => repo.FetchUser("1")).Returns(user);
             // Act
             var result = await _userService.GetUserAsync("1", "");
@@ -45,7 +45,7 @@ namespace Testing.Users
             // Arrange
             var user = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
 
-            _mockAuth.Setup(repo => repo.SignUpAsync(user.Email, "")).ReturnsAsync(new AuthToken("1", "", "", "", "", ""));
+            _mockAuth.Setup(repo => repo.SignUpAsync(user.Email, "")).ReturnsAsync(new CookieOptions("1", "", "", "", "", ""));
             _mockRepo.Setup(repo => repo.InsertUser(user)).Returns(user);
             var result = await _userService.CreateUser(new UserWithPassword(user, ""));
 

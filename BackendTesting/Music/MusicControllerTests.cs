@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Testing.Music
+namespace Testing.MusicTesting
 {
     internal class MusicControllerTests
     {
