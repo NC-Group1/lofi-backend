@@ -1,11 +1,45 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using lofi_backend.Data_Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Supabase;
+using Supabase.Gotrue;
 
 namespace lofi_backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController
+    public class AuthController : ControllerBase
     {
 
+        private Supabase.Client _supabaseClient;
+
+        public AuthController(Supabase.Client supabaseClient)
+        {
+            _supabaseClient = supabaseClient;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForwardPassword(string email)
+        {
+            try
+            {
+                Console.WriteLine($"Received email for password reset: {email}");
+                var options = new ResetPasswordForEmailOptions(email)
+                {
+                    RedirectTo = "https://localhost:5082/Login"
+                };
+
+                await _supabaseClient.Auth.ResetPasswordForEmail(options);
+
+                Console.WriteLine("Password reset email sent successfully.");
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending password reset email: {ex.Message}");
+                return BadRequest("Email is required.");
+
+            }
+        }
     }
 }
