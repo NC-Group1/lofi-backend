@@ -18,8 +18,36 @@ namespace lofi_backend.Controllers
             _supabaseClient = supabaseClient;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ForwardPassword([FromBody] string email)
+        [HttpPost("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
+        {
+            if(request == null || string.IsNullOrWhiteSpace(request.NewPassword))
+            {
+                return BadRequest(new { message = "New password cannot be empty." });
+            }
+            try
+            {
+                var attributes = new Supabase.Gotrue.UserAttributes
+                {
+                    Password = request.NewPassword
+                };
+                var updatedUserPassword = await _supabaseClient.Auth.Update(attributes);
+                if (updatedUserPassword != null)
+                {
+                    Console.WriteLine("Password updated successfully.");
+                    return Ok(new { message = "Password updated successfully." });
+                }
+                return BadRequest(new { message = "Failed to update password." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending password update email: {ex.Message}");
+                return StatusCode(500, new { message = "Error updating password." });
+            }
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] string email)
         {
             // email will be the raw JSON string, e.g. "example@gmail.com"
             try
@@ -46,6 +74,11 @@ namespace lofi_backend.Controllers
                 Console.WriteLine($"Error sending password reset email: {ex.Message}");
                 return BadRequest("Error sending password reset email.");
             }
+        }
+
+        public class UpdatePasswordRequest
+        {
+            public string NewPassword { get; set; } = string.Empty;
         }
     }
 }
