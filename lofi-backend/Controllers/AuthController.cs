@@ -83,5 +83,13 @@ namespace lofi_backend.Controllers
                 return NotFound();
             }
         }
+
+        [HttpPost("sign-out")]
+        public async Task<ActionResult> SignOut(UserData user)
+        {
+            Response.Cookies.Delete("supabase_jwt");
+            Response.Cookies.Delete("supabase_refresh");
+            return Ok(new { message = "logged out" });
+        }
     }
 }
