@@ -27,9 +27,10 @@ namespace lofi_backend.Database
                         Username = "studyowl",
                         FirstName = "Emma",
                         LastName = "Thompson",
-                        Email = "emma.thompson@example.com",
-                        DateOfBirth = new DateTime(1988, 4, 12),
-                        Gender = Gender.Female,
+                        Email = "samuelgdukes@gmail.com",
+                        DateOfBirth = new DateTime(1988, 4, 12), 
+                        Gender = Gender.Female, 
+
                     },
                     new UserData
                     {

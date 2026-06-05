@@ -16,5 +16,6 @@ namespace lofi_backend.Data_Models
         public Mood Mood { get; set; } = Mood.Chill;
         public Genre Genre { get; set; } = Genre.LoFi;
         public string URL { get; set; } = "";
+        public string Thumbnail { get; set; } = "";
     }
 }
