@@ -1,8 +1,9 @@
-﻿using lofi_backend.Data_Models;
+﻿using System.Text;
+using System.Text.Json;
+using lofi_backend.Data_Models;
 using lofi_backend.Data_Models.Enums;
 using lofi_backend.Database;
 using Microsoft.EntityFrameworkCore.Query.Internal;
-using System.Text.Json;
 
 namespace lofi_backend.Repository
 {
@@ -58,10 +59,15 @@ namespace lofi_backend.Repository
             foreach (var item in document.RootElement.GetProperty("items").EnumerateArray())
             {
                 var snippet = item.GetProperty("snippet");
-                var title = snippet.GetProperty("title").GetString() ?? "Unknown Title";
+                var title = System.Net.WebUtility.HtmlDecode(
+                    System.Text.RegularExpressions.Regex.Unescape(
+                        snippet.GetProperty("title").GetString() ?? "Unknown Title"
+                    ));
                 var channel = snippet.GetProperty("channelTitle").GetString() ?? "Unknown Channel";
                 var videoId = item.GetProperty("id").GetProperty("videoId").GetString() ?? string.Empty;
-                
+                var thumbnail = snippet.GetProperty("thumbnails").GetProperty("high").GetProperty("url").ToString();
+
+                Console.WriteLine(thumbnail);
                 
                 musicList.Add(new Music
                 {
@@ -70,7 +76,8 @@ namespace lofi_backend.Repository
                     Channel = channel ?? "",
                     Mood = Mood.Chill,
                     Genre = Genre.LoFi,
-                    URL = $"https://www.youtube.com/watch?v={videoId}"
+                    URL = $"https://www.youtube.com/watch?v={videoId}",
+                    Thumbnail = thumbnail
                 });
             }
             return musicList;

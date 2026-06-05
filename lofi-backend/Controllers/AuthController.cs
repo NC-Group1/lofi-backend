@@ -57,16 +57,15 @@ namespace lofi_backend.Controllers
         }
 
         [HttpPost("sign-in")]
-        public async Task<IActionResult> SignIn(UserWithPassword user)
+        public async Task<IActionResult> SignIn(LoginRequest user)
         {
             try
             {
                 Console.WriteLine("Getting user from supabase");
-                var session = await _supabaseClient.Auth.SignInWithPassword(user.UserData.Email, user.Password)
-                    ?? throw new UnauthorizedAccessException("Invalid credentials");
+                var session = await _supabaseClient.Auth.SignInWithPassword(user.Email, user.Password)
+                    ?? throw new UnauthorizedAccessException("No User Found");
 
-                if (session.AccessToken == null) throw new UnauthorizedAccessException("Invalid Credentials");
-                if (session.RefreshToken == null) throw new UnauthorizedAccessException("Invalid Credentials");
+                if (session.AccessToken == null) throw new UnauthorizedAccessException("Invalid Token");
 
                 Console.WriteLine(session?.User);
                 Console.WriteLine(session?.User?.Id);
@@ -160,5 +159,7 @@ namespace lofi_backend.Controllers
         {
             public string NewPassword { get; set; } = string.Empty;
         }
+
+        public record LoginRequest(string Email, string Password);
     }
 }
