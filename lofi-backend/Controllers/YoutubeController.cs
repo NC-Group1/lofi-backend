@@ -14,11 +14,14 @@ namespace lofi_backend.Controllers
         {
             _youtubeService = youtubeService;
         }
+
         [HttpGet]
-        public async Task<IActionResult> SearchYoutubeAsync([FromQuery] string search)
+        public async Task<IActionResult> SearchYoutubeAsync(string search = "")
         {
+            Console.WriteLine("Something");
             try
             {
+                Console.WriteLine("Attempting to get results");
                 var results = await _youtubeService.SearchYoutubeAsync(search);
                 return Ok(results);
             }

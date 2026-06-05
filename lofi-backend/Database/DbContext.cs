@@ -157,7 +157,7 @@ namespace lofi_backend.Database
                 //    new Music
                 //    {
                 //        Id = 19,
-                //        Title = "Relaxing LoFi Study Mix",
+                //        Title = "Relax LoFi Study Mix",
                 //        Artist = "LoFi Beats",
                 //        Channel = "LoFi Beats",
                 //        Mood = Mood.Study,
@@ -190,7 +190,7 @@ namespace lofi_backend.Database
                     new Playlist
                     {
                         Id = "playlist2",
-                        Name = "Relaxing Evening",
+                        Name = "Relax Evening",
                         Mood = Mood.Relax,
                         Genre = Genre.Chill,
                         Songs = new List<Music>()
@@ -199,7 +199,7 @@ namespace lofi_backend.Database
                     new Playlist
                     {
                         Id = "playlist3",
-                        Name = "Sleepy Time",
+                        Name = "Sleep Time",
                         Mood = Mood.Sleep,
                         Genre = Genre.LoFi,
                         Songs = new List<Music>()

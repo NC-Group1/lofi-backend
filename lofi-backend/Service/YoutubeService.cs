@@ -17,12 +17,7 @@ namespace lofi_backend.Service
         }
         public async Task<List<Music>> SearchYoutubeAsync(string search)
         {
-            if(string.IsNullOrEmpty(search))
-            {
-                throw new ArgumentException("Search query cannot be null or empty.");
-            }
-
-
+            Console.WriteLine("Service layer");
             return await _youtubeRepository.SearchYoutubeAsync(search);
         }
     }
