@@ -73,6 +73,9 @@ namespace lofi_backend
 
             builder.Services.AddControllers();
 
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<IYoutubeRepository, YoutubeRepository>();
+            builder.Services.AddScoped<IYoutubeService, YoutubeService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
 
