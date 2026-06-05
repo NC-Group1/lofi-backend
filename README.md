@@ -1,9 +1,14 @@
 # 🎧 Calico Backend
 
-[![.NET Version](https://img.shields.io/badge/.NET-8.0-purple.svg)](https://dotnet.microsoft.com/)
-[![Auth](https://img.shields.io/badge/Auth-Supabase%20JWT-green.svg)](https://supabase.com/)
-[![Database](https://img.shields.io/badge/Database-SQLite%20%7C%20SQL%20Server-blue.svg)]()
-[![Design Blueprint](https://img.shields.io/badge/Design-UML%20%7C%20Figma-blue.svg)](#-design--planning)
+![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![C#](https://img.shields.io/badge/Language-C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
+![EF Core](https://img.shields.io/badge/ORM-EF_Core-512BD4?style=for-the-badge&logo=efcore&logoColor=white)
+![Database](https://img.shields.io/badge/Database-SQLite_/_SQL_Server-336791?style=for-the-badge&logo=sqlite&logoColor=white)
+![Swagger](https://img.shields.io/badge/Docs-Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
+![HealthChecks](https://img.shields.io/badge/Monitoring-HealthChecks-FF6F00?style=for-the-badge&logo=heartbeat&logoColor=white)
+![Testing](https://img.shields.io/badge/Testing-NUnit_/_Moq_/_Shouldly-512BD4?style=for-the-badge&logo=testinglibrary&logoColor=white)
+![Design](https://img.shields.io/badge/Design-UML_/_Figma-000000?style=for-the-badge&logo=figma&logoColor=white)
+
 
 Calico Backend is a production-style ASP.NET Core Web API built as part of a collaborative full-stack group project. It powers the Calico LoFi platform by providing robust media streaming, productivity tracking, and secure identity management through a highly maintainable, testable, and decoupled layered architecture.
 
@@ -13,8 +18,6 @@ Calico Backend is a production-style ASP.NET Core Web API built as part of a col
 The backend is designed for real‑world maintainability and scalability, featuring:
 
 * Layered architecture (Controllers → Services → Repositories → EF Core → Database)
-
-* Secure Supabase JWT authentication
 
 * Dual‑database strategy (SQLite for development, SQL Server for production)
 
@@ -40,12 +43,6 @@ The backend is designed for real‑world maintainability and scalability, featur
 
 
 # 🎯 Core Features
-## Authentication
-* Supabase JWT validation
-
-* Secure cookie‑based token extraction (supabase_jwt)
-
-* Issuer, audience, and lifetime validation
 
 ## User Management
 * User CRUD
@@ -74,14 +71,14 @@ The backend is designed for real‑world maintainability and scalability, featur
 
 * Swagger API documentation
 
-* Automatic DB creation/migration
-
 # 🛠️ Planned Features
 * Role‑based access control (RBAC)
 
 * Admin endpoints
 
 * Caching layer (Redis or MemoryCache)
+  
+* Authentication flow
 
 # 🏗️ Architecture
 Calico Backend follows a clean, decoupled layered architecture:
@@ -116,10 +113,6 @@ The backend includes automated test coverage across all major layers.
 
 * In‑memory SQLite — integration‑style repository tests
 
-# 🔐 Authentication & Program Setup
-
-The backend uses Supabase JWT authentication with secure cookie extraction.
-
 ## Database Configuration
 * Development: SQLite (auto‑created with EnsureCreated())
 
@@ -129,17 +122,3 @@ The backend uses Supabase JWT authentication with secure cookie extraction.
 * ApiHealthCheck
 
 * DatabaseHealthCheck
-
-## 📁 Project Structure
-
-lofi-backend-sol/
-├── lofi-backend/               # Main Application
-│   ├── Controllers/            # API Endpoints
-│   ├── Data Models/            # Entities, ViewModels, Enums
-│   ├── Database/               # EF Core DbContext
-│   ├── HealthChecks/           # API + DB diagnostics
-│   ├── Repository/             # Data access layer
-│   └── Service/                # Business logic layer
-└── Testing/                    # Automated Tests (NUnit)
-    └── [Auth | Music | Playlist | Projects | TaskTimer | Users]
-
