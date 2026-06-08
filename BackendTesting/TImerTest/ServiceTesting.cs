@@ -1,11 +1,10 @@
-﻿using lofi_backend.Data_Models;
-using lofi_backend.Repository;
-using lofi_backend.Repository.Authentication;
+﻿using lofi_backend.Repository;
 using lofi_backend.Service;
+using lofi_backend.Models;
 using Moq;
 using Shouldly;
 
-namespace Testing;
+namespace Testing.TaskTimer;
 
 public class ServiceTesting
 {

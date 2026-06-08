@@ -20,7 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\lofi-backend\lofi-backend.csproj" />
+<!--    <ProjectReference Include="..\lofi-backend\lofi-backend.csproj" />-->
+    <ProjectReference Include="../lofi-backend/lofi-backend.csproj" />
   </ItemGroup>
 
   <ItemGroup>

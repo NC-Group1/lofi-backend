@@ -1,5 +1,5 @@
 ﻿using lofi_backend.Repository;
-using lofi_backend.Data_Models;
+using lofi_backend.Models;
 
 namespace lofi_backend.Service
 {

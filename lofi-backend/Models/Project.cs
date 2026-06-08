@@ -1,4 +1,4 @@
-﻿namespace lofi_backend.Data_Models
+﻿namespace lofi_backend.Models
 {
     public class Project
     {

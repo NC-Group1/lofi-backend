@@ -1,6 +1,6 @@
 ﻿using lofi_backend.Controllers;
-using lofi_backend.Data_Models;
 using lofi_backend.Service;
+using lofi_backend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

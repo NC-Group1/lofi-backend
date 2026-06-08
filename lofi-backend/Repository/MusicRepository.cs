@@ -1,5 +1,6 @@
 ﻿using lofi_backend.Data_Models;
 using lofi_backend.Database;
+using lofi_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 

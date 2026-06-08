@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace lofi_backend.Data_Models
+namespace lofi_backend.Models
 {
     public class ResetPasswordForm
     {

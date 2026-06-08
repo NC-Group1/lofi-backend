@@ -11,6 +11,9 @@
 *.sln.docstates
 *.env
 customsettings.json
+lofi_backend/customsettings.json
+.DS_Store
+.idea/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

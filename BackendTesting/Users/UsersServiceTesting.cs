@@ -1,29 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Moq;
+﻿using lofi_backend.Models;
 using lofi_backend.Repository;
 using lofi_backend.Service;
-using lofi_backend.Data_Models;
-using lofi_backend.Repository.Authentication;
+using Microsoft.AspNetCore.Http;
+using Moq;
 using Shouldly;
 
-namespace Testing.UsersServiceTesting
+namespace Testing.Users
 {
     internal class UsersServiceTesting
     {
         private Mock<IUserRepository> _mockRepo;
-        private Mock<IAuthenticationRepository> _mockAuth;
         private UserService _userService;
 
         [SetUp]
         public void SetUp()
         {
             _mockRepo = new Mock<IUserRepository>();
-            _mockAuth = new Mock<IAuthenticationRepository>();
-            _userService = new UserService(_mockRepo.Object, _mockAuth.Object);
+            _userService = new UserService(_mockRepo.Object);
         }
 
         [Test]
@@ -31,12 +24,11 @@ namespace Testing.UsersServiceTesting
         {
             // Arrange
             var user = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
-            var authUser = new AuthenticatedUser(user, new CookieOptions());
             _mockRepo.Setup(repo => repo.FetchUser("1")).Returns(user);
             // Act
             var result = await _userService.GetUserAsync("1", "");
             // Assert
-            result.UserData.ShouldBe(user);
+            result.ShouldBe(user);
         }
 
         [Test]
@@ -45,11 +37,10 @@ namespace Testing.UsersServiceTesting
             // Arrange
             var user = new UserData(id: "1", username: "Test User", firstName: "John", lastName: "Music", email: "email@email.com", dateOfBirth: DateTime.Now, gender: 0);
 
-            _mockAuth.Setup(repo => repo.SignUpAsync(user.Email, "")).ReturnsAsync(new CookieOptions("1", "", "", "", "", ""));
             _mockRepo.Setup(repo => repo.InsertUser(user)).Returns(user);
             var result = await _userService.CreateUser(new UserWithPassword(user, ""));
 
-            result.UserData.ShouldBe(user);
+            result.ShouldBe(user);
         }
 
         [Test]

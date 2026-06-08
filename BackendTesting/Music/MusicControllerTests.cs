@@ -28,7 +28,7 @@ namespace Testing.MusicTesting
         public void GetAllMusics_Returns200Ok()
         {
             // Arrange
-            _mockService.Setup(service => service.GetAllMusics()).Returns(new List<lofi_backend.Data_Models.Music>());
+            _mockService.Setup(service => service.GetAllMusics()).Returns(new List<Music>());
             // Act
             var result = _musicController.GetAllMusics() as OkObjectResult;
             // Assert
@@ -52,7 +52,7 @@ namespace Testing.MusicTesting
         public void GetMusicById_Returns200Ok()
         {
             // Arrange
-            _mockService.Setup(service => service.GetMusicById(1)).Returns(new lofi_backend.Data_Models.Music());
+            _mockService.Setup(service => service.GetMusicById(1)).Returns(new Music());
             // Act
             var result = _musicController.GetMusicById(1) as OkObjectResult;
             // Assert
@@ -76,7 +76,7 @@ namespace Testing.MusicTesting
         public void CreateMusic_ReturnsCreatedAtAction_WhenMusicIsValid()
         {
             // Arrange
-            var music = new lofi_backend.Data_Models.Music
+            var music = new Music
             {
                 Id = 1,
                 Title = "Test Music",
@@ -98,7 +98,7 @@ namespace Testing.MusicTesting
         public void CreateMusic_ReturnsBadRequest_WhenMusicIsInvalid()
         {
             // Arrange
-            var music = new lofi_backend.Data_Models.Music
+            var music = new Music
             {
                 Id = 1,
                 Title = "Test Music",
@@ -121,7 +121,7 @@ namespace Testing.MusicTesting
         public void CreateMusic_MusicAlreadyExists_Returns400BadRequest()
         {
             // Arrange
-            var music = new lofi_backend.Data_Models.Music
+            var music = new Music
             {
                 Id = 1,
                 Title = "Test Music",

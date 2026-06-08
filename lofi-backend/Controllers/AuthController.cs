@@ -1,9 +1,11 @@
 ﻿using lofi_backend.Data_Models;
+using lofi_backend.Models;
 using lofi_backend.Service;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Supabase;
+
 using Supabase.Gotrue;
 
 namespace lofi_backend.Controllers
@@ -20,34 +22,18 @@ namespace lofi_backend.Controllers
         }
 
         [HttpPost("sign-up")]
-        public async Task<IActionResult> SignUp(UserWithPassword user)
+        public async Task<IActionResult> SignUp(LoginRequest user)
         {
             try
             {
                 Console.WriteLine("Getting user from supabase");
-                Console.WriteLine($"User Email: {user.UserData.Email}");
+                Console.WriteLine($"User Email: {user.Email}");
                 Console.WriteLine($"User Password: {user.Password}");
-                var session = await _supabaseClient.Auth.SignUp(user.UserData.Email, user.Password) 
-                    ?? throw new UnauthorizedAccessException("Invalid credentials");
-
-                if (session.AccessToken == null) throw new UnauthorizedAccessException("Invalid Credentials");
-                if (session.RefreshToken == null) throw new UnauthorizedAccessException("Invalid Credentials");
-
-                Console.WriteLine(session?.User);
-                Console.WriteLine(session?.User?.Id);
-
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
-                    Expires = session?.ExpiresAt()
-                };
-
-                Response.Cookies.Append("supabase_jwt", session!.AccessToken, cookieOptions);
-                Response.Cookies.Append("supabase_refresh_token", session!.RefreshToken, cookieOptions);
-
-                return Created();
+                var result = await _supabaseClient.Auth.SignUp(user.Email, user.Password);
+                    
+                return result is null ? 
+                    throw new UnauthorizedAccessException("Invalid credentials") : 
+                    Created("User has been created successfully", user.Email);
             }
             catch (Exception ex)
             {
@@ -57,7 +43,7 @@ namespace lofi_backend.Controllers
         }
 
         [HttpPost("sign-in")]
-        public async Task<IActionResult> SignIn(LoginRequest user)
+        public async Task<ActionResult<AuthResponse>> SignIn(LoginRequest user)
         {
             try
             {
@@ -65,22 +51,18 @@ namespace lofi_backend.Controllers
                 var session = await _supabaseClient.Auth.SignInWithPassword(user.Email, user.Password)
                     ?? throw new UnauthorizedAccessException("No User Found");
 
-                if (session.AccessToken == null) throw new UnauthorizedAccessException("Invalid Token");
+                if (session.RefreshToken == null || session.AccessToken == null) 
+                    throw new UnauthorizedAccessException("Invalid Token");
 
-                Console.WriteLine(session?.User);
-                Console.WriteLine(session?.User?.Id);
+                Console.WriteLine(session.User);
+                Console.WriteLine(session.User?.Id);
 
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
-                    Expires = session?.ExpiresAt()
-                };
-
-                Response.Cookies.Append("supabase_jwt", session!.AccessToken, cookieOptions);
-                Response.Cookies.Append("supabase_refresh_token", session!.RefreshToken, cookieOptions);
-                return Ok("User has been signed in successfully");
+                Console.WriteLine(session.AccessToken);
+                Console.WriteLine(session.RefreshToken);
+                
+                Response.Cookies.Append("jwt", session.AccessToken);
+                Response.Cookies.Append("refreshtoken", session.RefreshToken);
+                return Ok(new AuthResponse(session.AccessToken, session.RefreshToken));
             }
             catch (Exception ex)
             {
@@ -90,23 +72,39 @@ namespace lofi_backend.Controllers
         }
 
         [HttpPost("sign-out")]
-        public async Task<ActionResult> SignOut(UserData user)
+        public async Task<ActionResult> SignOutUser()
         {
-            Response.Cookies.Delete("supabase_jwt");
-            Response.Cookies.Delete("supabase_refresh");
+            await _supabaseClient.Auth.SignOut(); 
             return Ok(new { message = "logged out" });
          }
+        
+        [HttpPost("refresh")]
+            public async Task<ActionResult<AuthResponse>> Refresh()
+            {
+                var refreshToken = Request.Cookies["refreshtoken"];
+                if (string.IsNullOrEmpty(refreshToken)) 
+                    return BadRequest("Refresh token is missing.");
+
+                var newToken = await _supabaseClient.Auth.RefreshSession();
+                if (newToken?.RefreshToken is null || newToken.AccessToken is null) 
+                    return BadRequest("Failed to refresh token.");
+
+                Response.Cookies.Append("jwt", newToken.AccessToken);
+                Response.Cookies.Append("refreshtoken", newToken.RefreshToken);
+
+                return Ok(new AuthResponse(newToken.AccessToken, newToken.RefreshToken));
+            }
 
         [HttpPost("update-password")]
         public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
         {
-            if(request == null || string.IsNullOrWhiteSpace(request.NewPassword))
+            if(string.IsNullOrWhiteSpace(request.NewPassword))
             {
                 return BadRequest(new { message = "New password cannot be empty." });
             }
             try
             {
-                var attributes = new Supabase.Gotrue.UserAttributes
+                var attributes = new UserAttributes
                 {
                     Password = request.NewPassword
                 };
@@ -161,5 +159,12 @@ namespace lofi_backend.Controllers
         }
 
         public record LoginRequest(string Email, string Password);
+        
+        public class AuthResponse(string token, string refresh)
+        {
+            public string AccessToken { get; set; } = token;
+
+            public string RefreshToken { get; set; } = refresh;
+        }
     }
 }

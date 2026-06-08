@@ -23,6 +23,7 @@ namespace lofi_backend
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Configuration.SetBasePath(AppContext.BaseDirectory);
             builder.Configuration.AddJsonFile("customsettings.json");
 
             var supabaseUrl = builder.Configuration["Supabase:Url"]!;

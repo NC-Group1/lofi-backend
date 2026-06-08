@@ -3,6 +3,7 @@ using System.Text.Json;
 using lofi_backend.Data_Models;
 using lofi_backend.Data_Models.Enums;
 using lofi_backend.Database;
+using lofi_backend.Models;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.IdentityModel.Tokens;
 

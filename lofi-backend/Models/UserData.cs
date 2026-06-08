@@ -1,10 +1,7 @@
-﻿ using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using Azure.Core;
-using Azure.Identity;
+﻿using System.ComponentModel.DataAnnotations;
 using lofi_backend.Data_Models.Enums;
 
-namespace lofi_backend.Data_Models
+namespace lofi_backend.Models
 {
     public class UserData
     {

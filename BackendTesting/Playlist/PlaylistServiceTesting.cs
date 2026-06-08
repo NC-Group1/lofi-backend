@@ -26,9 +26,9 @@ namespace Testing.PlaylistTests
         public void GetAllPlaylists_ReturnsListOfPlaylists()
         {
             // Arrange
-            var testPlaylists = new List<lofi_backend.Data_Models.Playlist>
+            var testPlaylists = new List<Playlist>
             {
-                new lofi_backend.Data_Models.Playlist
+                new Playlist
                 {
                     Id = "1",
                     Name = "Test Playlist 1",
@@ -40,7 +40,7 @@ namespace Testing.PlaylistTests
                         new Music { Id = 2, Title = "Track 2", Artist = "Artist 2", Channel = "testChannel2", Genre = Genre.Chill, Mood = Mood.Relax, URL = "www.testurl2"}
                     }
                 },
-                new lofi_backend.Data_Models.Playlist
+                new Playlist
                 {
                     Id = "2",
                     Name = "Test Playlist 2",
@@ -66,7 +66,7 @@ namespace Testing.PlaylistTests
         public void GetPlaylistById_ReturnsPlaylist()
         {
             // Arrange
-            var testPlaylist = new lofi_backend.Data_Models.Playlist
+            var testPlaylist = new Playlist
             {
                 Id = "1",
                 Name = "Test Playlist",
@@ -89,7 +89,7 @@ namespace Testing.PlaylistTests
         public void CreatePlaylist_ReturnsCreatedPlaylist()
         {
             // Arrange
-            var newPlaylist = new lofi_backend.Data_Models.Playlist
+            var newPlaylist = new Playlist
             {
                 Id = "1",
                 Name = "New Playlist",
@@ -112,7 +112,7 @@ namespace Testing.PlaylistTests
         public void EditPlaylist_ReturnsUpdatedPlaylist()
         {
             // Arrange
-            var updatedPlaylist = new lofi_backend.Data_Models.Playlist
+            var updatedPlaylist = new Playlist
             {
                 Id = "1",
                 Name = "Updated Playlist",
@@ -136,7 +136,7 @@ namespace Testing.PlaylistTests
         public void DeletePlaylist_ReturnsDeletedPlaylist()
         {
             // Arrange
-            var deletedPlaylist = new lofi_backend.Data_Models.Playlist
+            var deletedPlaylist = new Playlist
             {
                 Id = "1",
                 Name = "Deleted Playlist",

@@ -43,7 +43,7 @@ namespace Testing.PlaylistTests
                         new Music { Id = 2, Title = "Track 2", Artist = "Artist 2", Channel = "testChannel2", Genre = Genre.Chill, Mood = Mood.Relax, URL = "www.testurl2"}
                     }
                 },
-                new lofi_backend.Data_Models.Playlist
+                new Playlist
                 {
                     Id = "2",
                     Name = "Test Playlist 2",
@@ -64,7 +64,7 @@ namespace Testing.PlaylistTests
             Assert.IsNotNull(result);
             result.ShouldBeOfType<OkObjectResult>();
 
-            var returnedPlaylists = result.Value as List<lofi_backend.Data_Models.Playlist>;
+            var returnedPlaylists = result.Value as List<Playlist>;
 
             Assert.IsNotNull(returnedPlaylists);
             Assert.That(returnedPlaylists.Count, Is.EqualTo(2));
@@ -74,7 +74,7 @@ namespace Testing.PlaylistTests
         public void GetPlaylistById_ReturnsPlaylist()
         {
             // Arrange
-            var testPlaylist = new lofi_backend.Data_Models.Playlist
+            var testPlaylist = new Playlist
             {
                 Id = "1",
                 Name = "Test Playlist 1",
@@ -94,7 +94,7 @@ namespace Testing.PlaylistTests
             Assert.IsNotNull(result);
             result.ShouldBeOfType<OkObjectResult>();
 
-            var returnedPlaylist = result.Value as lofi_backend.Data_Models.Playlist;
+            var returnedPlaylist = result.Value as Playlist;
 
             Assert.IsNotNull(returnedPlaylist);
             Assert.That(returnedPlaylist.Id, Is.EqualTo("1"));
@@ -116,7 +116,7 @@ namespace Testing.PlaylistTests
         public void CreatePlaylist_ReturnsCreatedPlaylist()
         {
             // Arrange
-            var newPlaylist = new lofi_backend.Data_Models.Playlist
+            var newPlaylist = new Playlist
             {
                 Id = "1",
                 Name = "Test Playlist 1",
@@ -135,7 +135,7 @@ namespace Testing.PlaylistTests
             Assert.IsNotNull(result);
             result.ShouldBeOfType<CreatedAtActionResult>();
 
-            var createdPlaylist = result.Value as lofi_backend.Data_Models.Playlist;
+            var createdPlaylist = result.Value as Playlist;
             Assert.IsNotNull(createdPlaylist);
             Assert.That(createdPlaylist.Id, Is.EqualTo("1"));
         }
@@ -144,7 +144,7 @@ namespace Testing.PlaylistTests
         public void CreatePlaylist_PlaylistAlreadyExists_ReturnsBadRequest()
         {
             // Arrange
-            var newPlaylist = new lofi_backend.Data_Models.Playlist
+            var newPlaylist = new Playlist
             {
                 Id = "1",
                 Name = "Test Playlist 1",
@@ -168,7 +168,7 @@ namespace Testing.PlaylistTests
         public void EditPlaylist_ReturnsUpdatedPlaylist()
         {
             // Arrange
-            var updatedPlaylist = new lofi_backend.Data_Models.Playlist
+            var updatedPlaylist = new Playlist
             {
                 Id = "1",
                 Name = "Updated Playlist",
@@ -186,7 +186,7 @@ namespace Testing.PlaylistTests
             // Assert
             Assert.IsNotNull(result);
             result.ShouldBeOfType<OkObjectResult>();
-            var editedPlaylist = result.Value as lofi_backend.Data_Models.Playlist;
+            var editedPlaylist = result.Value as Playlist;
             Assert.IsNotNull(editedPlaylist);
             Assert.That(editedPlaylist.Name, Is.EqualTo("Updated Playlist"));
         }
@@ -195,7 +195,7 @@ namespace Testing.PlaylistTests
         public void EditPlaylist_PlaylistDoesNotExist_ReturnsBadRequest()
         {
             // Arrange
-            var updatedPlaylist = new lofi_backend.Data_Models.Playlist
+            var updatedPlaylist = new Playlist
             {
                 Id = "1",
                 Name = "Updated Playlist",
@@ -220,7 +220,7 @@ namespace Testing.PlaylistTests
         {
             // Arrange
             _mockPlaylistService.Setup(s => s.DeletePlaylist("1"))
-                                .Returns(new lofi_backend.Data_Models.Playlist { Id = "1" });
+                                .Returns(new Playlist { Id = "1" });
 
             // Act
             var result = _playlistController.DeletePlaylist("1") as NoContentResult;
@@ -235,7 +235,7 @@ namespace Testing.PlaylistTests
         {
             // Arrange
             _mockPlaylistService.Setup(s => s.DeletePlaylist("1"))
-                                .Returns((lofi_backend.Data_Models.Playlist)null);
+                                .Returns((Playlist)null);
 
             // Act
             var result = _playlistController.DeletePlaylist("1") as NotFoundObjectResult;

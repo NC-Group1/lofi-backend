@@ -28,9 +28,9 @@ namespace Testing.MusicTesting
         public void GetAllMusics_ReturnsAllMusics()
         {
             // Arrange
-            var musics = new List<lofi_backend.Data_Models.Music>
+            var musics = new List<Music>
             {
-                new lofi_backend.Data_Models.Music
+                new Music
                 {
                     Id = 1,
                     Title = "Test Music",
@@ -41,7 +41,7 @@ namespace Testing.MusicTesting
                     URL = "Test URL"
                 },
 
-                new lofi_backend.Data_Models.Music
+                new Music
                 {
                     Id = 2,
                     Title = "Test Music 2",
@@ -64,7 +64,7 @@ namespace Testing.MusicTesting
         public void GetAllMusics_ReturnsEmptyList_WhenNoMusicsExist()
         {
             // Arrange
-            var musics = new List<lofi_backend.Data_Models.Music>();
+            var musics = new List<Music>();
             _mockRepo.Setup(repo => repo.GetAllMusics()).Returns(musics);
             // Act
             var result = _musicService.GetAllMusics();
@@ -76,7 +76,7 @@ namespace Testing.MusicTesting
         public void GetMusicById_ReturnsMusic()
         {
             // Arrange
-            var music = new lofi_backend.Data_Models.Music
+            var music = new Music
             {
                 Id = 1,
                 Title = "Test Music",
@@ -97,7 +97,7 @@ namespace Testing.MusicTesting
         public void GetMusicById_ReturnsNull_WhenMusicDoesNotExist()
         {
             // Arrange
-            _mockRepo.Setup(repo => repo.GetMusicById(1)).Returns((lofi_backend.Data_Models.Music)null);
+            _mockRepo.Setup(repo => repo.GetMusicById(1)).Returns((Music)null);
             // Act
             var result = _musicService.GetMusicById(1);
             // Assert
@@ -108,7 +108,7 @@ namespace Testing.MusicTesting
         public void CreateMusic_ReturnsCreatedMusic()
         {
             // Arrange
-            var musicToCreate = new lofi_backend.Data_Models.Music
+            var musicToCreate = new Music
             {
                 Title = "Test Music",
                 Artist = "Test Artist",
@@ -117,7 +117,7 @@ namespace Testing.MusicTesting
                 Genre = lofi_backend.Data_Models.Enums.Genre.LoFi,
                 URL = "Test URL"
             };
-            var createdMusic = new lofi_backend.Data_Models.Music
+            var createdMusic = new Music
             {
                 Id = 1,
                 Title = "Test Music",

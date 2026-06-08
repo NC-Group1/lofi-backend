@@ -1,12 +1,11 @@
 ﻿using lofi_backend.Controllers;
-using lofi_backend.Data_Models;
 using lofi_backend.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 using Moq;
 
-namespace Testing;
+namespace Testing.TimerTest;
 
 public class ControllerTesting
 {

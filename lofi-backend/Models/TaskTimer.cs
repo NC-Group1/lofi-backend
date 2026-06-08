@@ -1,4 +1,4 @@
-﻿namespace lofi_backend.Data_Models
+﻿namespace lofi_backend.Models
 {
     public class TaskTimer
     {
@@ -7,7 +7,7 @@
         public DateTime DateUpdated { get; set; }
         public int Duration { get; set; } // Duration in seconds
         public bool IsActive { get; set; }
-        public int? ProjectId { get; set; }
+        public int ProjectId { get; set; }
 
         public TaskTimer()
         {
