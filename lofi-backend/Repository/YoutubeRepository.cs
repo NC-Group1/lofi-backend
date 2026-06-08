@@ -1,10 +1,13 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json;
 using lofi_backend.Data_Models;
 using lofi_backend.Data_Models.Enums;
 using lofi_backend.Database;
 using lofi_backend.Models;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 
 namespace lofi_backend.Repository
@@ -84,6 +87,7 @@ namespace lofi_backend.Repository
             if (search.IsNullOrEmpty())
             {
                 Console.WriteLine("Returning full video list");
+               mockVideos.Shuffle();
                 return mockVideos;
             }
             else
@@ -94,10 +98,27 @@ namespace lofi_backend.Repository
 
         }
     }
+    public static class ListExtensions
+    {
+        private static Random _rng = new Random();
+
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = _rng.Next(n + 1); // Select a random index
+                T value = list[k];        // Swap elements
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
+    }
+
 
     public static class MusicResults
     {
-
         public static List<Music> Results = new List<Music>
         {
             new Music
@@ -440,19 +461,7 @@ namespace lofi_backend.Repository
                 Genre = Genre.LoFi,
                 URL = "https://www.youtube.com/watch?v=01dn67QubYQ",
                 Thumbnail = "https://i.ytimg.com/vi/01dn67QubYQ/hqdefault.jpg"
-            },
-            new Music
-            {
-                Id = 32,
-                Title = "Mind Relax Lofi Song | Mind Relax Lofi Mashup | Mind Fresh Lofi Songs | Slowed and Reverb",
-                Artist = "RP Crazy Creator",
-                Channel = "RP CRAZY CREATOR ",
-                Mood = Mood.Relax,
-                Genre = Genre.LoFi,
-                URL = "https://www.youtube.com/watch?v=JqnBMOywBBw",
-                Thumbnail = "https://i.ytimg.com/vi/JqnBMOywBBw/hqdefault.jpg"
-            },
-            new Music
+            },            new Music
             {
                 Id = 33,
                 Title = "lofi hip hop mix 📚 beats to relax/study to (Part 1)",
@@ -671,18 +680,7 @@ namespace lofi_backend.Repository
                 Genre = Genre.LoFi,
                 URL = "https://www.youtube.com/watch?v=oJnF5VxTO5g",
                 Thumbnail = "https://i.ytimg.com/vi/oJnF5VxTO5g/hqdefault.jpg"
-            },
-            new Music
-            {
-                Id = 53,
-                Title = "SAD LOFI SONGS | HEART BROKEN LOFI MASHUP | SLOW + REVERB LOFI MIX",
-                Artist = "Loferian Rahul",
-                Channel = "ʟᴏꜰᴇʀɪᴀɴ ʀᴀʜᴜʟꜱ\n",
-                Mood = Mood.Sad,
-                Genre = Genre.LoFi,
-                URL = "https://www.youtube.com/watch?v=v-Pizmo0lcw",
-                Thumbnail = "https://i.ytimg.com/vi/v-Pizmo0lcw/hqdefault.jpg"
-            },
+            }, 
             new Music
             {
                 Id = 54,
@@ -751,17 +749,6 @@ namespace lofi_backend.Repository
             },
             new Music
             {
-                Id = 60,
-                Title = "Mind Relax Lofi Mashup | Mind Relaxing Songs | Mind Relax Lofi Song | Slowed And Reverb",
-                Artist = "Nitin Tomu Payal",
-                Channel = "ɴɪᴛɪɴ_ᴛᴏᴍᴜ_ᴘᴀʏᴀʟ",
-                Mood = Mood.Calm,
-                Genre = Genre.LoFi,
-                URL = "https://www.youtube.com/watch?v=zoFLbJ_09aM",
-                Thumbnail = "https://i.ytimg.com/vi/zoFLbJ_09aM/hqdefault.jpg"
-            },
-            new Music
-            {
                 Id = 61,
                 Title = "Best of lofi hip hop 2022 🎆 - beats to relax/study to",
                 Artist = "Lofi Girl",
@@ -806,28 +793,6 @@ namespace lofi_backend.Repository
             },
             new Music
             {
-                Id = 65,
-                Title = "1 Hour of Night Hindi Lofi Songs To Chill Relax Refreshing",
-                Artist = "Vicky Bhai",
-                Channel = "viral vicky vlogs ",
-                Mood = Mood.Chill,
-                Genre = Genre.LoFi,
-                URL = "https://www.youtube.com/watch?v=t8yVk0bm684",
-                Thumbnail = "https://i.ytimg.com/vi/t8yVk0bm684/hqdefault.jpg"
-            },
-            new Music
-            {
-                Id = 66,
-                Title = "Best of Bollywood Hindi lofi / chill mix playlist | 1 hour non-stop to relax, drive, study, sleep 💙🎵",
-                Artist = "aMeth Music",
-                Channel = "aMeth Music",
-                Mood = Mood.Relax,
-                Genre = Genre.LoFi,
-                URL = "https://www.youtube.com/watch?v=KRA26LhuTP4",
-                Thumbnail = "https://i.ytimg.com/vi/KRA26LhuTP4/hqdefault.jpg"
-            },
-            new Music
-            {
                 Id = 67,
                 Title = "🎧2027 Ultimate Mind Relaxing Lofi Beats | Study, Sleep & Chill 😍✨",
                 Artist = "77 Bird",
@@ -836,17 +801,6 @@ namespace lofi_backend.Repository
                 Genre = Genre.LoFi,
                 URL = "https://www.youtube.com/watch?v=yQDGJ7L3rxQ",
                 Thumbnail = "https://i.ytimg.com/vi/yQDGJ7L3rxQ/hqdefault.jpg"
-            },
-            new Music
-            {
-                Id = 68,
-                Title = "Lofi mashup || non stop + love songs || use headphones And feel Songs",
-                Artist = "Music Club",
-                Channel = "music club",
-                Mood = Mood.Romantic,
-                Genre = Genre.LoFi,
-                URL = "https://www.youtube.com/watch?v=vOxZJ0wKaGc",
-                Thumbnail = "https://i.ytimg.com/vi/vOxZJ0wKaGc/hqdefault.jpg"
             },
             new Music
             {
@@ -872,17 +826,6 @@ namespace lofi_backend.Repository
             },
             new Music
             {
-                Id = 71,
-                Title = "love - mashup (slowed+ reverb) Lo-fi songs 🎧🎧",
-                Artist = "Shubankar",
-                Channel = "shubankar 007",
-                Mood = Mood.Romantic,
-                Genre = Genre.LoFi,
-                URL = "https://www.youtube.com/watch?v=HM_OGtwR2jM",
-                Thumbnail = "https://i.ytimg.com/vi/HM_OGtwR2jM/hqdefault.jpg"
-            },
-            new Music
-            {
                 Id = 72,
                 Title = "It's 3am. Why so sad ? ~ lofi hip hop mix",
                 Artist = "Dreamy",
@@ -902,17 +845,6 @@ namespace lofi_backend.Repository
                 Genre = Genre.Jazz,
                 URL = "https://www.youtube.com/watch?v=9kzE8isXlQY",
                 Thumbnail = "https://i.ytimg.com/vi/9kzE8isXlQY/hqdefault.jpg"
-            },
-            new Music
-            {
-                Id = 74,
-                Title = "NON STOP INSTAGRAM TRENDING LOVE MASHUP - Part 17 | PLAYLIST BY @lofi2307",
-                Artist = "Lo-fi 2307",
-                Channel = "Lo-fi 2307",
-                Mood = Mood.Romantic,
-                Genre = Genre.Pop,
-                URL = "https://www.youtube.com/watch?v=Ez54QnP0Ais",
-                Thumbnail = "https://i.ytimg.com/vi/Ez54QnP0Ais/hqdefault.jpg"
             },
             new Music
             {
@@ -982,17 +914,6 @@ namespace lofi_backend.Repository
             },
             new Music
             {
-                Id = 81,
-                Title = "Krishna Lofi Songs 4.0 | Slow & Reverb | The Sound Of Inner Peace | Relaxing Lofi Song",
-                Artist = "Krishna for Life",
-                Channel = "Krishna for Life",
-                Mood = Mood.Calm,
-                Genre = Genre.World,
-                URL = "https://www.youtube.com/watch?v=wBbdNd682A4",
-                Thumbnail = "https://i.ytimg.com/vi/wBbdNd682A4/hqdefault.jpg"
-            },
-            new Music
-            {
                 Id = 82,
                 Title = "Coffee Lofi ☕1 Hour Cafe Song 🎵 Stream cafe ✨cute & relaxing music 🍪 Make Your Day Better",
                 Artist = "Lofi Kitty",
@@ -1056,30 +977,7 @@ namespace lofi_backend.Repository
                 Genre = Genre.World,
                 URL = "https://www.youtube.com/watch?v=gnZImHvA0ME",
                 Thumbnail = "https://i.ytimg.com/vi/gnZImHvA0ME/hqdefault.jpg"
-            },
-            new Music
-            {
-                Id = 88,
-                Title = "1 Hour Of Night Hindi Lofi Songs To Study \\Chill \\Relax \\Refreshing",
-                Artist = "Indian Musical Videos",
-                Channel = "indianmusicalvideos",
-                Mood = Mood.Chill,
-                Genre = Genre.LoFi,
-                URL = "https://www.youtube.com/watch?v=qG8hzNAxrhY",
-                Thumbnail = "https://i.ytimg.com/vi/qG8hzNAxrhY/hqdefault.jpg"
-            },
-            new Music
-            {
-                Id = 89,
-                Title = "K.K X Emraan Hashmi Mashup (Non-Stop Jukebox) Part - 2 | Lo-fi 2307",
-                Artist = "KK & Emraan Hashmi",
-                Channel = "Lo-fi 2307",
-                Mood = Mood.Chill,
-                Genre = Genre.Pop,
-                URL = "https://www.youtube.com/watch?v=EWZqulvXnZQ",
-                Thumbnail = "https://i.ytimg.com/vi/EWZqulvXnZQ/hqdefault.jpg"
-            },
-            new Music
+            },            new Music
             {
                 Id = 90,
                 Title = "Lofi Relax 🍃 Lofi Hip Hop | Calming Music 🎶 Deep Focus, Relaxing Music",
@@ -1199,7 +1097,535 @@ namespace lofi_backend.Repository
                 Genre = Genre.HipHop,
                 URL = "https://www.youtube.com/watch?v=Q89Dzox4jAE",
                 Thumbnail = "https://i.ytimg.com/vi/Q89Dzox4jAE/hqdefault.jpg"
-            }
+            },
+                new Music
+                {
+                    Id = 101,
+                    Title = "C H I L L V I B E S | Chill & aesthetic music playlist",
+                    Artist = "EYM",
+                    Channel = "EYM",
+                    Mood = Mood.Chill,
+                    Genre = Genre.Chill,
+                    URL = "https://www.youtube.com/watch?v=oJnF5VxTO5g",
+                    Thumbnail = "https://i.ytimg.com/vi/oJnF5VxTO5g/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 102,
+                    Title = "Chill Lofi Mix [chill lo-fi hip hop beats]",
+                    Artist = "Settle",
+                    Channel = "Settle",
+                    Mood = Mood.Chill,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=CLeZyIID9Bo",
+                    Thumbnail = "https://i.ytimg.com/vi/CLeZyIID9Bo/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 103,
+                    Title = "Zelda & Chill",
+                    Artist = "GameChops",
+                    Channel = "GameChops",
+                    Mood = Mood.Chill,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=GdzrrWA8e7A",
+                    Thumbnail = "https://i.ytimg.com/vi/GdzrrWA8e7A/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 104,
+                    Title = "Peaceful Piano & Soft Rain - Relaxing Sleep Music, A Bitter Rain",
+                    Artist = "The Soul of Wind",
+                    Channel = "The Soul of Wind",
+                    Mood = Mood.Sleep,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=hj83cwfOF3Y",
+                    Thumbnail = "https://i.ytimg.com/vi/hj83cwfOF3Y/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 105,
+                    Title = "Epic Chillstep Collection 2015 [2 Hours]",
+                    Artist = "Arctic Empire",
+                    Channel = "Arctic Empire",
+                    Mood = Mood.Chill,
+                    Genre = Genre.Electronic,
+                    URL = "https://www.youtube.com/watch?v=fWRISvgAygU",
+                    Thumbnail = "https://i.ytimg.com/vi/fWRISvgAygU/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 106,
+                    Title = "90's Chill Lofi ☕️ Study Music Lofi Rain Chillhop Beats ☔️ Lofi Rain Playlist",
+                    Artist = "The Japanese Town",
+                    Channel = "The Japanese Town",
+                    Mood = Mood.Study,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=sF80I-TQiW0",
+                    Thumbnail = "https://i.ytimg.com/vi/sF80I-TQiW0/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 107,
+                    Title = "all of a sudden, everything becomes alright...",
+                    Artist = "Ambient Crafts",
+                    Channel = "Ambient Crafts",
+                    Mood = Mood.Calm,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=ANkxRGvl1VY",
+                    Thumbnail = "https://i.ytimg.com/vi/ANkxRGvl1VY/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 108,
+                    Title = "🎧 Thunder and Rain with Halo 3: ODST Piano 8 Hours | Sleep and Relaxation",
+                    Artist = "Dukino",
+                    Channel = "Dukino",
+                    Mood = Mood.Sleep,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=MzJjzEEphfM",
+                    Thumbnail = "https://i.ytimg.com/vi/MzJjzEEphfM/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 109,
+                    Title = "Hogwarts Classroom | Harry Potter Music & Ambience - 5 Scenes for Studying, Focusing, & Sleep",
+                    Artist = "Ambient Worlds",
+                    Channel = "Ambient Worlds",
+                    Mood = Mood.Focus,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=BQrxsyGTztM",
+                    Thumbnail = "https://i.ytimg.com/vi/BQrxsyGTztM/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 110,
+                    Title = "Chill Drive - Aesthetic Music ~ Lofi hip hop mix",
+                    Artist = "chilli music",
+                    Channel = "chilli music",
+                    Mood = Mood.Chill,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=iicfmXFALM8",
+                    Thumbnail = "https://i.ytimg.com/vi/iicfmXFALM8/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 111,
+                    Title = "City of Gamers - Chill/Gaming/Studying Lofi Hip Hop Mix - (1 hour)",
+                    Artist = "Deepspot Lofi",
+                    Channel = "Deepspot Lofi",
+                    Mood = Mood.Study,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=FFfdyV8gnWk",
+                    Thumbnail = "https://i.ytimg.com/vi/FFfdyV8gnWk/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 112,
+                    Title = "Party music mix ~ Best songs that make you dance",
+                    Artist = "A.C Vibes",
+                    Channel = "A.C Vibes",
+                    Mood = Mood.Party,
+                    Genre = Genre.Dance,
+                    URL = "https://www.youtube.com/watch?v=7J653nwumcw",
+                    Thumbnail = "https://i.ytimg.com/vi/7J653nwumcw/hqdefault.jpg"
+                },
+            new Music
+                {
+                    Id = 114,
+                    Title = "The Witcher 3: One hour of Emotional and Relaxing Music",
+                    Artist = "Prestigious_Gaming",
+                    Channel = "Prestigious_Gaming",
+                    Mood = Mood.Relax,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=8GYL6c_GTE0",
+                    Thumbnail = "https://i.ytimg.com/vi/8GYL6c_GTE0/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 115,
+                    Title = "no more thinking tonight... (minecraft music w/ soft rain)",
+                    Artist = "Drift Away Ambience",
+                    Channel = "Drift Away Ambience",
+                    Mood = Mood.Sleep,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=yJ6Lbsmb1lY",
+                    Thumbnail = "https://i.ytimg.com/vi/yJ6Lbsmb1lY/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 116,
+                    Title = "ＳＬＥＥＰＹ 💤 Lofi hip hop mix - Beats to sleep/chill to | Deep Sleeping Music",
+                    Artist = "Music chill",
+                    Channel = "Music chill",
+                    Mood = Mood.Sleep,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=ff5lO8TkVX8",
+                    Thumbnail = "https://i.ytimg.com/vi/ff5lO8TkVX8/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 117,
+                    Title = "Game of Thrones Music & North Ambience | Winterfell - House Stark Theme",
+                    Artist = "Apollo",
+                    Channel = "Apollo",
+                    Mood = Mood.Calm,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=OYlzcXA3LxI",
+                    Thumbnail = "https://i.ytimg.com/vi/OYlzcXA3LxI/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 118,
+                    Title = "Relaxing Animal Crossing music + rain sounds ♡",
+                    Artist = "miffynoa",
+                    Channel = "miffynoa",
+                    Mood = Mood.Relax,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=1wOAhRAqb40",
+                    Thumbnail = "https://i.ytimg.com/vi/1wOAhRAqb40/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 119,
+                    Title = "best anime openings but it's lofi remix extended edition (2 hours)",
+                    Artist = "LlamaLoops",
+                    Channel = "LlamaLoops",
+                    Mood = Mood.Chill,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=GNWLILeztaI",
+                    Thumbnail = "https://i.ytimg.com/vi/GNWLILeztaI/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 120,
+                    Title = "Ghibli Coffee Shop ☕️ Music to put you in a better mood 🌿 lofi hip hop - lofi songs | study / relax",
+                    Artist = "Lofi Coffee",
+                    Channel = "Lofi Coffee",
+                    Mood = Mood.Relax,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=zhDwjnYZiCo",
+                    Thumbnail = "https://i.ytimg.com/vi/zhDwjnYZiCo/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 121,
+                    Title = "The Last of Us - Relaxing Music Compilation",
+                    Artist = "Eduardo Lima",
+                    Channel = "Eduardo Lima",
+                    Mood = Mood.Relax,
+                    Genre = Genre.Acoustic,
+                    URL = "https://www.youtube.com/watch?v=zm3IBGxHL3w",
+                    Thumbnail = "https://i.ytimg.com/vi/zm3IBGxHL3w/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 122,
+                    Title = "Productive Music For Work | Chill Playlist",
+                    Artist = "BLUME",
+                    Channel = "BLUME",
+                    Mood = Mood.Focus,
+                    Genre = Genre.Chill,
+                    URL = "https://www.youtube.com/watch?v=ZVb_yKMivqo",
+                    Thumbnail = "https://i.ytimg.com/vi/ZVb_yKMivqo/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 123,
+                    Title = "best slowed down/chill music",
+                    Artist = "Mecry",
+                    Channel = "Mecry",
+                    Mood = Mood.Chill,
+                    Genre = Genre.Chill,
+                    URL = "https://www.youtube.com/watch?v=bDaswBd-_ck",
+                    Thumbnail = "https://i.ytimg.com/vi/bDaswBd-_ck/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 124,
+                    Title = "Chill Work Music — Calm Focus Mix",
+                    Artist = "Chill Music Lab",
+                    Channel = "Chill Music Lab",
+                    Mood = Mood.Focus,
+                    Genre = Genre.Chill,
+                    URL = "https://www.youtube.com/watch?v=BYl7v0YsX9g",
+                    Thumbnail = "https://i.ytimg.com/vi/BYl7v0YsX9g/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 125,
+                    Title = "ＳＴＵＤＹ ＴＩＭＥ ✍ Lofi Hip Hop | Study Music ✍ Lofi study, Relaxing Music",
+                    Artist = "Mimi Lofi Chill",
+                    Channel = "Mimi Lofi Chill",
+                    Mood = Mood.Study,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=32dGIHCzbfE",
+                    Thumbnail = "https://i.ytimg.com/vi/32dGIHCzbfE/hqdefault.jpg"
+                },
+            new Music
+                {
+                    Id = 127,
+                    Title = "peaceful solitude",
+                    Artist = "Eternal Warriors",
+                    Channel = "Eternal Warriors",
+                    Mood = Mood.Calm,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=F02iMCEEQWs",
+                    Thumbnail = "https://i.ytimg.com/vi/F02iMCEEQWs/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 128,
+                    Title = "Skyrim Ambience - Study & Relaxation Music - 3 hours",
+                    Artist = "Aaronmn7",
+                    Channel = "Aaronmn7",
+                    Mood = Mood.Study,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=_Z1VzsE1GVg",
+                    Thumbnail = "https://i.ytimg.com/vi/_Z1VzsE1GVg/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 129,
+                    Title = "DnD Calm Fantasy Music for Adventure and Exploration | 3 Hour Mix for Dungeons & Dragons",
+                    Artist = "Everrune",
+                    Channel = "Everrune",
+                    Mood = Mood.Calm,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=sHA_4wfQhE8",
+                    Thumbnail = "https://i.ytimg.com/vi/sHA_4wfQhE8/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 130,
+                    Title = "Ｎｉｇｈｔ Ｄｒｉｖｅ ~ lofi hip hop mix ~ beats to chill / drive to",
+                    Artist = "Mimi Lofi Chill",
+                    Channel = "Mimi Lofi Chill",
+                    Mood = Mood.Chill,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=zW5wpJY1rgQ",
+                    Thumbnail = "https://i.ytimg.com/vi/zW5wpJY1rgQ/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 131,
+                    Title = "Fullmetal Alchemist Beautiful Music | Best Anime OST",
+                    Artist = "LO-FI SENPAI",
+                    Channel = "LO-FI SENPAI",
+                    Mood = Mood.Relax,
+                    Genre = Genre.Classical,
+                    URL = "https://www.youtube.com/watch?v=CZPul4k9bUU",
+                    Thumbnail = "https://i.ytimg.com/vi/CZPul4k9bUU/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 132,
+                    Title = "Café Leblanc | Coffee Shop Ambience: Smooth Jazz Persona Music & Rain to Study, Relax, & Sleep",
+                    Artist = "Ambience Academy",
+                    Channel = "Ambience Academy",
+                    Mood = Mood.Study,
+                    Genre = Genre.Jazz,
+                    URL = "https://www.youtube.com/watch?v=ZXni9_91ORs",
+                    Thumbnail = "https://i.ytimg.com/vi/ZXni9_91ORs/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 133,
+                    Title = "Hollow Knight • Relaxing Music with Ambiance (Rain, Fire, Night, Snow) 🎧 #tenpers",
+                    Artist = "Tenpers Universe",
+                    Channel = "Tenpers Universe",
+                    Mood = Mood.Relax,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=mYEA5A0Bjyo",
+                    Thumbnail = "https://i.ytimg.com/vi/mYEA5A0Bjyo/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 134,
+                    Title = "Zelda & Chill 2",
+                    Artist = "GameChops",
+                    Channel = "GameChops",
+                    Mood = Mood.Focus,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=rJlY1uKL87k",
+                    Thumbnail = "https://i.ytimg.com/vi/rJlY1uKL87k/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 135,
+                    Title = "Animal Crossing New Horizons Music To Study/Chill/Sleep",
+                    Artist = "RemDaBom",
+                    Channel = "RemDaBom",
+                    Mood = Mood.Study,
+                    Genre = Genre.Chill,
+                    URL = "https://www.youtube.com/watch?v=V6GUhCxMDLg",
+                    Thumbnail = "https://i.ytimg.com/vi/V6GUhCxMDLg/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 136,
+                    Title = "lofi sleep, lo-fi rain 💤 8 hours mix 😴 beats to sleep/chill/relax to - music for insomnia & anxiety",
+                    Artist = "Sleep Tales",
+                    Channel = "Sleep Tales",
+                    Mood = Mood.Sleep,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=gWp8xxB2PxM",
+                    Thumbnail = "https://i.ytimg.com/vi/gWp8xxB2PxM/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 137,
+                    Title = "2 hours of chill video game music 🍹",
+                    Artist = "alf 🌙",
+                    Channel = "alf 🌙",
+                    Mood = Mood.Chill,
+                    Genre = Genre.Chill,
+                    URL = "https://www.youtube.com/watch?v=JJis0sld2cM",
+                    Thumbnail = "https://i.ytimg.com/vi/JJis0sld2cM/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 138,
+                    Title = "Music for when you are stressed🍀",
+                    Artist = "Sunshine",
+                    Channel = "Sunshine",
+                    Mood = Mood.Calm,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=_BtXPQimVhg",
+                    Thumbnail = "https://i.ytimg.com/vi/_BtXPQimVhg/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 139,
+                    Title = "Mario Kart Music to Study /Work FAST | Tenpers",
+                    Artist = "Moki",
+                    Channel = "Moki",
+                    Mood = Mood.Workout,
+                    Genre = Genre.Electronic,
+                    URL = "https://www.youtube.com/watch?v=ctL1r742ETI",
+                    Thumbnail = "https://i.ytimg.com/vi/ctL1r742ETI/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 140,
+                    Title = "Chill Vibes 🎧😌💨 Lofi hip hop ~ Healing Music, Relaxing, Study To",
+                    Artist = "chilli music",
+                    Channel = "chilli music",
+                    Mood = Mood.Chill,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=IYLDF2-PvFg",
+                    Thumbnail = "https://i.ytimg.com/vi/IYLDF2-PvFg/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 141,
+                    Title = "1 Hour of Relaxing and Beautiful Zelda Music",
+                    Artist = "Ralph L. Tanaka",
+                    Channel = "Ralph L. Tanaka",
+                    Mood = Mood.Relax,
+                    Genre = Genre.Classical,
+                    URL = "https://www.youtube.com/watch?v=wb_E3HnLwG4",
+                    Thumbnail = "https://i.ytimg.com/vi/wb_E3HnLwG4/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 142,
+                    Title = "1 A.M Chill Session 🌌 [synthwave]",
+                    Artist = "Lofi Girl",
+                    Channel = "Lofi Girl",
+                    Mood = Mood.Chill,
+                    Genre = Genre.Electronic,
+                    URL = "https://www.youtube.com/watch?v=TlWYgGyNnJo",
+                    Thumbnail = "https://i.ytimg.com/vi/TlWYgGyNnJo/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 143,
+                    Title = "ＦＯＲＥＶＥＲ ＩＮ ２００６ サイレントヒル (4 Hour Silent Hill Ambient - Zerofuturism REUPLOAD )",
+                    Artist = "Renna",
+                    Channel = "Renna",
+                    Mood = Mood.Sad,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=CNEW2udsaTc",
+                    Thumbnail = "https://i.ytimg.com/vi/CNEW2udsaTc/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 144,
+                    Title = "Meditate Like A WITCHER 🎵 10 HOURS Relaxing Music (SLEEP | STUDY | FOCUS)",
+                    Artist = "z3n Pnk",
+                    Channel = "z3n Pnk",
+                    Mood = Mood.Focus,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=-MJi7T4lX80",
+                    Thumbnail = "https://i.ytimg.com/vi/-MJi7T4lX80/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 145,
+                    Title = "miss the good old days...",
+                    Artist = "Ambient Crafts",
+                    Channel = "Ambient Crafts",
+                    Mood = Mood.Calm,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=_5jELltfi9U",
+                    Thumbnail = "https://i.ytimg.com/vi/_5jELltfi9U/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 146,
+                    Title = "Super Mario 🍄 Lofi HipHop |best calm and relaxing Mix | Super Mario Bros - Art: @pixeljeff_design",
+                    Artist = "Lofi Culture",
+                    Channel = "Lofi Culture",
+                    Mood = Mood.Chill,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=FDUk0Kcte9A",
+                    Thumbnail = "https://i.ytimg.com/vi/FDUk0Kcte9A/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 147,
+                    Title = "Night lofi playlist • lofi music | chill beats to relax/study to",
+                    Artist = "HITO",
+                    Channel = "HITO",
+                    Mood = Mood.Chill,
+                    Genre = Genre.LoFi,
+                    URL = "https://www.youtube.com/watch?v=cIZhlFIyJ_Y",
+                    Thumbnail = "https://i.ytimg.com/vi/cIZhlFIyJ_Y/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 148,
+                    Title = "Relaxing The Legend Of Zelda: Twilight Princess Music",
+                    Artist = "Lou Says",
+                    Channel = "Lou Says",
+                    Mood = Mood.Relax,
+                    Genre = Genre.Classical,
+                    URL = "https://www.youtube.com/watch?v=3oypmjuiM0E",
+                    Thumbnail = "https://i.ytimg.com/vi/3oypmjuiM0E/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 149,
+                    Title = "some peace for hard nights... (minecraft music, soft rain & water)",
+                    Artist = "Drift Away Ambience",
+                    Channel = "Drift Away Ambience",
+                    Mood = Mood.Sleep,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=OkNo_N85em0",
+                    Thumbnail = "https://i.ytimg.com/vi/OkNo_N85em0/hqdefault.jpg"
+                },
+                new Music
+                {
+                    Id = 150,
+                    Title = "One Piece Ambient: Music mix & ambience",
+                    Artist = "Anime Ambient アニメアンビエント",
+                    Channel = "Anime Ambient アニメアンビエント",
+                    Mood = Mood.Chill,
+                    Genre = Genre.Ambient,
+                    URL = "https://www.youtube.com/watch?v=7_-ePcoRgHs",
+                    Thumbnail = "https://i.ytimg.com/vi/7_-ePcoRgHs/hqdefault.jpg"
+                }
         };
     }
 }
